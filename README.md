@@ -26,29 +26,53 @@
 	<a href="#socials">Connect</a>
 </p>
 
+<div align="center">
+<code>
+<pre align="left" style="display: inline-block; border-radius: 8px; font-family: 'JetBrains Mono', 'Fira Code', monospace; line-height: 1.3; padding: 1.5rem; background-color: #0d1117; color: #c9d1d9; border: 1px solid #30363d;">
+<span style="color: #38BDF8;">       /\</span>          <span style="color: #38BDF8; font-weight: bold;">sreevarshan</span>@<span style="color: #38BDF8; font-weight: bold;">xenoz</span>
+<span style="color: #38BDF8;">      /  \</span>         -----------------
+<span style="color: #38BDF8;">     /    \</span>        <span style="color: #38BDF8; font-weight: bold;">OS:</span> Arch Linux x86_64
+<span style="color: #38BDF8;">    /      \</span>       <span style="color: #38BDF8; font-weight: bold;">Host:</span> Iris AI OS [Builder Edition]
+<span style="color: #38BDF8;">   /   ,,   \</span>      <span style="color: #38BDF8; font-weight: bold;">Kernel:</span> AI-Optimized Custom
+<span style="color: #38BDF8;">  /   |  |   \</span>     <span style="color: #38BDF8; font-weight: bold;">Uptime:</span> 24/7 (Offline-First)
+<span style="color: #38BDF8;"> /_-''    ''-_\</span>    <span style="color: #38BDF8; font-weight: bold;">Shell:</span> Fish (Agentic)
+                   <span style="color: #38BDF8; font-weight: bold;">Theme:</span> Dark Mode Only
+                   <span style="color: #38BDF8; font-weight: bold;">Mission:</span> Building systems, not just models
+</pre>
+</code>
+</div>
+<br>
+
 <a id="about"></a>
 
 # 💫 About Me
 
-I am an AI/ML engineer in progress focused on building systems, not just models.<br><br>
+<details open>
+<summary><b>🧠 What I build</b></summary>
+End-to-end AI products that move from idea to deployment: real pipelines, real users, real constraints.
+</details>
 
-🧠 What I build<br>
-End-to-end AI products that move from idea to deployment: real pipelines, real users, real constraints.<br><br>
-
-🚀 Shipped systems<br>
+<details>
+<summary><b>🚀 Shipped systems</b></summary>
 - AI-based EV trip planning platform with real-time route optimization, analytics, and decision support.<br>
 - Secure real-time chat system with AI-driven features and production-minded architecture.<br>
-- Offline AI coding assistant powered by local LLMs, optimized for privacy and on-device use.<br><br>
+- Offline AI coding assistant powered by local LLMs, optimized for privacy and on-device use.
+</details>
 
-⚙️ Engineering mindset<br>
-I care about performance, scalability, reliability, and shipping practical software. My work sits at the intersection of machine learning, deep learning, and intelligent agent workflows where latency, resource limits, and UX matter as much as model quality.<br><br>
+<details>
+<summary><b>⚙️ Engineering mindset</b></summary>
+I care about performance, scalability, reliability, and shipping practical software. My work sits at the intersection of machine learning, deep learning, and intelligent agent workflows where latency, resource limits, and UX matter as much as model quality.
+</details>
 
-🔬 Current exploration
+<details>
+<summary><b>🔬 Current exploration</b></summary>
 - Offline-first AI systems that stay useful without cloud dependency.<br>
 - Real-time intelligence with agent-based orchestration patterns.<br>
-- Bridging advanced AI capabilities with usable, production-ready products.<br><br>
+- Bridging advanced AI capabilities with usable, production-ready products.
+</details>
 
 I do not just learn AI. I build with it.
+<br>
 
 ---
 
@@ -154,14 +178,17 @@ Fix options:
 <a id="stats"></a>
 
 ## 📊 GitHub Stats
-![](https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true)<br/>
-![](https://github-readme-streak-stats.herokuapp.com/?user=sreevarshan-xenoz&theme=catppuccin-mocha&hide_border=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
-
-[![Sree's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=sreevarshan-xenoz&theme=react-dark&hide_border=true)](https://github.com/sreevarshan-xenoz)
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true" alt="stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="top langs" />
+</p>
 
 <details>
-<summary><b>Open extra live widgets</b></summary>
+<summary><b>Open extra live widgets & activity graphs</b></summary>
+
+## 📈 Activity & Streak
+![](https://github-readme-streak-stats.herokuapp.com/?user=sreevarshan-xenoz&theme=catppuccin-mocha&hide_border=false)<br/>
+[![Sree's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=sreevarshan-xenoz&theme=react-dark&hide_border=true)](https://github.com/sreevarshan-xenoz)
 
 ## 🏆 GitHub Trophies
 ![](https://github-profile-trophy.vercel.app/?username=sreevarshan-xenoz&theme=catppuccin_mocha&no-frame=false&no-bg=true&margin-w=4)
@@ -177,8 +204,13 @@ Fix options:
 ---
 
 ## 🐍 Contribution Snake
-![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)
-![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg#gh-light-mode-only)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg">
+    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg">
+  </picture>
+</p>
 
 ---
 
