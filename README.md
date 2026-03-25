@@ -1,24 +1,100 @@
+<p align="center">
+	<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=38&desc=AI%20Systems%20Builder%20%7C%20Arch%20Linux%20Enthusiast%20%7C%20Iris%20Creator&descAlign=50&descAlignY=58&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="header" />
+</p>
+
+<p align="center">
+	<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=2500&pause=900&color=38BDF8&center=true&vCenter=true&width=960&lines=Building+Iris+AI+OS+on+Arch+Linux;Voice-First+%7C+Offline-First+%7C+Builder+Mode;Engineering+Future-Ready+Systems" alt="Typing SVG" />
+</p>
+
+<p align="center">
+	<img src="https://img.shields.io/github/followers/sreevarshan-xenoz?style=for-the-badge&label=Followers&color=0ea5e9" alt="followers" />
+	<img src="https://komarev.com/ghpvc/?username=sreevarshan-xenoz&style=for-the-badge&color=0ea5e9" alt="profile views" />
+	<img src="https://img.shields.io/badge/Status-Building%20Iris-0f172a?style=for-the-badge&logo=linux&logoColor=38BDF8" alt="status" />
+</p>
+
+<p align="center">
+	<img src="https://img.shields.io/badge/Focus-Voice%20AI%20%2B%20Offline%20First-111827?style=flat-square&logo=openai&logoColor=38BDF8" alt="focus" />
+	<img src="https://img.shields.io/badge/Open%20to-Collaborations-111827?style=flat-square&logo=github&logoColor=38BDF8" alt="collaboration" />
+	<img src="https://img.shields.io/badge/Loves-Arch%20Linux-111827?style=flat-square&logo=arch-linux&logoColor=38BDF8" alt="arch" />
+</p>
+
+<a id="about"></a>
+
 # 💫 About Me
 
-🔭 I’m currently working on<br>
-Building my own AI OS called Iris, based on Arch Linux - voice-controlled, highly customizable, and basically my own digital butler that doesn’t judge my 3AM coding sessions.<br><br>
+I am an AI/ML engineer in progress focused on building systems, not just models.<br><br>
 
-🤝 I’m looking to collaborate on<br>
-AI productivity tools, open-source Linux projects, or anything that makes tech feel sci-fi and actually useful.<br><br>
+🧠 What I build<br>
+End-to-end AI products that move from idea to deployment: real pipelines, real users, real constraints.<br><br>
 
-🤔 I’m looking for help with<br>
-Low-level OS optimization, real-time speech recognition, and near-zero-latency cross-device syncing.<br><br>
+🚀 Shipped systems<br>
+- AI-based EV trip planning platform with real-time route optimization, analytics, and decision support.<br>
+- Secure real-time chat system with AI-driven features and production-minded architecture.<br>
+- Offline AI coding assistant powered by local LLMs, optimized for privacy and on-device use.<br><br>
 
-🌱 I’m currently learning<br>
-Advanced cybersecurity - from TCP/IP internals to zero-day concepts. I’m also diving deeper into AI model training and offline-first architecture.<br><br>
+⚙️ Engineering mindset<br>
+I care about performance, scalability, reliability, and shipping practical software. My work sits at the intersection of machine learning, deep learning, and intelligent agent workflows where latency, resource limits, and UX matter as much as model quality.<br><br>
 
-💬 Ask me about<br>
-Custom Arch installs, voice assistant architecture, 3D printing hacks, or surviving hackathons with 2 hours of sleep and 4 cans of Monster.<br><br>
+🔬 Current exploration
+- Offline-first AI systems that stay useful without cloud dependency.<br>
+- Real-time intelligence with agent-based orchestration patterns.<br>
+- Bridging advanced AI capabilities with usable, production-ready products.<br><br>
 
-⚡ Fun fact<br>
-I installed Arch Linux 45 times in one week just to master it.
+I do not just learn AI. I build with it.
 
 ---
+
+<a id="play"></a>
+
+## 🎮 Play Zone
+
+### AI Systems Quest
+Choose your route and jump into the part of my profile you want to explore first.
+
+| Choice | Mission | Jump |
+|---|---|---|
+| ⚡ Speedrun | See what I build and how I ship | [Start at About](#about) |
+| 🧰 Toolsmith | Inspect the full tools stack | [Open Tech Stack](#stack) |
+| 📈 Signal Mode | Check coding consistency and public activity | [Open GitHub Stats](#stats) |
+| 🤝 Network Mode | Connect and collaborate | [Open Socials](#socials) |
+
+<details>
+<summary><b>🐛 Bug Hunt Mini Challenge (click to play)</b></summary>
+
+Find the hidden issue in this tiny Python snippet.
+
+```python
+def select_best_route(routes):
+	best_score = float("inf")
+	best_route = None
+
+	for route in routes:
+		score = route["time_min"] + route["energy_kwh"] * 0.7
+		if score > best_score:
+			best_score = score
+			best_route = route
+
+	return best_route
+```
+
+Question: Why can this return `None` even when routes exist?
+
+<details>
+<summary><b>✅ Reveal Answer</b></summary>
+
+`best_score` starts at infinity, but the comparison uses `>`.
+No finite `score` is greater than infinity, so `best_route` never updates.
+
+Fix options:
+- Change `if score > best_score:` to `if score < best_score:`
+- Or initialize `best_score = float("-inf")` if you want max-score logic
+
+</details>
+</details>
+
+---
+
+<a id="socials"></a>
 
 ## 🌐 Socials
 [![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/sreevarshan298)
@@ -27,7 +103,12 @@ I installed Arch Linux 45 times in one week just to master it.
 
 ---
 
+<a id="stack"></a>
+
 ## 💻 Tech Stack
+<details open>
+<summary><b>Tap to collapse/expand stack</b></summary>
+
 ![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
@@ -51,12 +132,21 @@ I installed Arch Linux 45 times in one week just to master it.
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
 
+</details>
+
 ---
+
+<a id="stats"></a>
 
 ## 📊 GitHub Stats
 ![](https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true)<br/>
 ![](https://nirzak-streak-stats.vercel.app/?user=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
+
+[![Sree's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=sreevarshan-xenoz&theme=react-dark&hide_border=true)](https://github.com/sreevarshan-xenoz)
+
+<details>
+<summary><b>Open extra live widgets</b></summary>
 
 ## 🏆 GitHub Trophies
 ![](https://github-profile-trophy.vercel.app/?username=sreevarshan-xenoz&theme=catppuccin_mocha&no-frame=false&no-bg=true&margin-w=4)
@@ -66,6 +156,13 @@ I installed Arch Linux 45 times in one week just to master it.
 
 ## 🔝 Top Contributed Repo
 ![](https://github-contributor-stats.vercel.app/api?username=sreevarshan-xenoz&limit=5&theme=catppuccin_mocha&combine_all_yearly_contributions=true)
+
+</details>
+
+---
+
+## 🐍 Contribution Snake
+![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg)
 
 ---
 
