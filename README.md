@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=38&desc=AI%20Systems%20Builder%20%7C%20Arch%20Linux%20Enthusiast%20%7C%20Iris%20Creator&descAlign=50&descAlignY=58&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="header" />
+	<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=42&desc=AI%20Systems%20Builder%20%7C%20Arch%20Linux%20Enthusiast%20%7C%20Iris%20Creator&descAlign=50&descAlignY=65&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="header" />
 </p>
 
 <p align="center">
@@ -13,9 +13,17 @@
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/badge/Focus-Voice%20AI%20%2B%20Offline%20First-111827?style=flat-square&logo=openai&logoColor=38BDF8" alt="focus" />
-	<img src="https://img.shields.io/badge/Open%20to-Collaborations-111827?style=flat-square&logo=github&logoColor=38BDF8" alt="collaboration" />
-	<img src="https://img.shields.io/badge/Loves-Arch%20Linux-111827?style=flat-square&logo=arch-linux&logoColor=38BDF8" alt="arch" />
+	<img src="https://img.shields.io/badge/Focus-Voice%20AI%20%2B%20Offline%20First-0f172a?style=for-the-badge&logo=openai&logoColor=38BDF8" alt="focus" />
+	<img src="https://img.shields.io/badge/Open%20to-Collaborations-0f172a?style=for-the-badge&logo=github&logoColor=38BDF8" alt="collaboration" />
+	<img src="https://img.shields.io/badge/Loves-Arch%20Linux-0f172a?style=for-the-badge&logo=arch-linux&logoColor=38BDF8" alt="arch" />
+</p>
+
+<p align="center">
+	<a href="#about">About Me</a> • 
+	<a href="#play">Play Zone</a> • 
+	<a href="#stack">Tech Stack</a> • 
+	<a href="#stats">GitHub Stats</a> • 
+	<a href="#socials">Connect</a>
 </p>
 
 <a id="about"></a>
@@ -97,7 +105,7 @@ Fix options:
 <a id="socials"></a>
 
 ## 🌐 Socials
-[![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/sreevarshan298)
+[![x](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/sreevarshan298)
 [![Codepen](https://img.shields.io/badge/Codepen-000000?logo=codepen&logoColor=white)](https://codepen.io/sree-varshan)
 [![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:sreevarshan1511@gmail.com)
 
@@ -109,28 +117,35 @@ Fix options:
 <details open>
 <summary><b>Tap to collapse/expand stack</b></summary>
 
-![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)
-![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+### AI/ML & Agents
+![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
+![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
+
+### Cloud & Infra
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
-![Netlify](https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7)
+![Alibaba Cloud](https://img.shields.io/badge/AlibabaCloud-%23FF6701.svg?style=for-the-badge&logo=alibabacloud&logoColor=white)
 ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![Alibaba Cloud](https://img.shields.io/badge/AlibabaCloud-%23FF6701.svg?style=for-the-badge&logo=alibabacloud&logoColor=white)
+![Netlify](https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7)
+
+### Linux & Core
+![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)
 ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+
+### Design & Creative
+![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
 ![Adobe After Effects](https://img.shields.io/badge/Adobe%20After%20Effects-9999FF.svg?style=for-the-badge&logo=Adobe%20After%20Effects&logoColor=white)
 ![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-%2331A8FF.svg?style=for-the-badge&logo=adobe%20photoshop&logoColor=white)
 ![Krita](https://img.shields.io/badge/Krita-203759?style=for-the-badge&logo=krita&logoColor=EEF37B)
 ![Gimp](https://img.shields.io/badge/Gimp-657D8B?style=for-the-badge&logo=gimp&logoColor=FFFFFF)
-![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
 ![Canva](https://img.shields.io/badge/Canva-%2300C4CC.svg?style=for-the-badge&logo=Canva&logoColor=white)
-![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
-![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
 
 </details>
 
@@ -140,7 +155,7 @@ Fix options:
 
 ## 📊 GitHub Stats
 ![](https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true)<br/>
-![](https://nirzak-streak-stats.vercel.app/?user=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false)<br/>
+![](https://github-readme-streak-stats.herokuapp.com/?user=sreevarshan-xenoz&theme=catppuccin-mocha&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
 
 [![Sree's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=sreevarshan-xenoz&theme=react-dark&hide_border=true)](https://github.com/sreevarshan-xenoz)
@@ -162,7 +177,8 @@ Fix options:
 ---
 
 ## 🐍 Contribution Snake
-![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg)
+![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only)
+![snake gif](https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg#gh-light-mode-only)
 
 ---
 
