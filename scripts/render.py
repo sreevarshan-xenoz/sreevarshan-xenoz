@@ -7,6 +7,8 @@
   card-{repo}-{theme}.svg   Fig. 3: each featured repository's file tree, drawn radially
   ridge-{theme}.svg         Fig. 4: my public commits by week and hour of day, as ridgelines
   fin-{theme}.svg           the closing card
+  year.stl                  Fig. 5: the last 52 weeks as towers on a ring, for GitHub's 3D viewer;
+                            with --readme, it is also written into the README between markers
 
 Every image plays a reveal when it loads and keeps some ambient motion after; with
 reduced motion requested they show the finished still. Effects that only matter
@@ -17,7 +19,7 @@ Display type is set as outlines (HarfBuzz shaping, fontTools outlines) so it can
 animated glyph by glyph; small mono text embeds a subset font.
 Fonts: Instrument Serif and IBM Plex Mono, SIL Open Font License 1.1.
 
-Usage: GITHUB_TOKEN=... python scripts/render.py [out_dir]
+Usage: GITHUB_TOKEN=... python scripts/render.py [out_dir] [--readme README.md]
 """
 import base64
 import collections
@@ -55,7 +57,9 @@ BAND_WORDS = ["Local-first", "Rust", "Coding agents", "On-device AI", "Remote de
 RULES = {  # section headers: name -> (label, note, when its spark first runs)
     "work": ("FIG. 3 · SELECTED WORK", "SIX PUBLIC PROJECTS, EACH DRAWN FROM ITS OWN FILE TREE", 4.0),
     "ship": ("FIG. 4 · WHEN I SHIP", "MY PUBLIC COMMITS, WEEK BY WEEK AND HOUR BY HOUR", 6.5),
+    "spin": ("FIG. 5 · THE YEAR IN 3D", "52 WEEKS AS TOWERS · DRAG TO SPIN, SCROLL TO ZOOM", 9.0),
 }
+STL_START, STL_END = "<!-- year-3d:start -->", "<!-- year-3d:end -->"
 SKIP_DIRS = {"node_modules", "target", "dist", "build", "vendor", ".git", "__pycache__", ".next", ".venv"}
 
 THEMES = {
@@ -142,13 +146,13 @@ def api(path):
     return _request(f"https://api.github.com/{path}")
 
 
-def contribution_days():
+def contribution_weeks():
+    """Every day GitHub counts for me over the last year, in calendar weeks: [[(date, count)]]."""
     query = """query($login: String!) { user(login: $login) { contributionsCollection {
       contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }"""
     res = _request("https://api.github.com/graphql", {"query": query, "variables": {"login": USER}})
-    weeks = res["data"]["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]
-    days = [(dt.date.fromisoformat(d["date"]), d["contributionCount"]) for w in weeks for d in w["contributionDays"]]
-    return days[-365:]
+    return [[(dt.date.fromisoformat(d["date"]), d["contributionCount"]) for d in w["contributionDays"]]
+            for w in res["data"]["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]]
 
 
 def repo_data(repo):
@@ -1170,14 +1174,90 @@ def render_fin(theme, italic, now):
     return doc.render(f"Let's build something that runs on your machine. {email.lower()}")
 
 
+# ---------------------------------------------------------------- Fig. 5, the year in 3D
+
+def year_stl(weeks):
+    """The last 52 complete weeks as towers standing on a ring, clockwise from the top like
+    Fig. 1, as an ASCII STL that GitHub renders with its 3D viewer."""
+    sums = [sum(c for _, c in w) for w in weeks]
+    n, top = len(sums), math.log1p(max(sums)) or 1
+    r1, r2 = 46, 70  # tower footprint
+    facets = []
+
+    def g(v, digits=1):
+        out = f"{v:.{digits}f}".rstrip("0").rstrip(".")
+        return "0" if out in ("", "-0") else out
+
+    def P(r, a, z):
+        return r * math.cos(math.radians(a)), r * math.sin(math.radians(a)), z
+
+    def quad(pts, inside):
+        """Two triangles, wound so the face points away from `inside`."""
+        a, b, c = pts[:3]
+        u, v = [b[i] - a[i] for i in range(3)], [c[i] - a[i] for i in range(3)]
+        nrm = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+        centre = [sum(p[i] for p in pts) / 4 for i in range(3)]
+        if sum(nrm[i] * (centre[i] - inside[i]) for i in range(3)) < 0:
+            pts, nrm = pts[::-1], [-x for x in nrm]
+        length = math.sqrt(sum(x * x for x in nrm)) or 1
+        normal = " ".join(g(x / length, 2) for x in nrm)
+        for tri in ((pts[0], pts[1], pts[2]), (pts[0], pts[2], pts[3])):
+            facets.append(f"facet normal {normal}\nouter loop\n"
+                          + "".join(f"vertex {g(x)} {g(y)} {g(z)}\n" for x, y, z in tri) + "endloop\nendfacet\n")
+
+    for k, total in enumerate(sums):
+        if not total:
+            continue
+        h = 4 + 66 * math.log1p(total) / top
+        a1, a2 = 90 - (k + 0.12) * 360 / n, 90 - (k + 0.88) * 360 / n
+        inside = P((r1 + r2) / 2, (a1 + a2) / 2, h / 2)
+        b = [P(r1, a1, 0), P(r2, a1, 0), P(r2, a2, 0), P(r1, a2, 0)]
+        t = [(x, y, h) for x, y, _ in b]
+        for face in (t, [b[1], b[2], t[2], t[1]], [b[0], b[3], t[3], t[0]], [b[0], b[1], t[1], t[0]], [b[3], b[2], t[2], t[3]]):
+            quad(face, inside)
+    for j in range(n):  # the plinth they stand on
+        a1, a2 = 90 - j * 360 / n, 90 - (j + 1) * 360 / n
+        inside = P(58, (a1 + a2) / 2, -1.5)
+        for face in ([P(40, a1, 0), P(76, a1, 0), P(76, a2, 0), P(40, a2, 0)],
+                     [P(40, a1, -3), P(76, a1, -3), P(76, a2, -3), P(40, a2, -3)],
+                     [P(76, a1, -3), P(76, a2, -3), P(76, a2, 0), P(76, a1, 0)],
+                     [P(40, a1, -3), P(40, a2, -3), P(40, a2, 0), P(40, a1, 0)]):
+            quad(face, inside)
+    return "solid year\n" + "".join(facets) + "endsolid year\n"
+
+
+def update_readme(path, stl):
+    """Put the model between the README's markers. Returns True if the README changed."""
+    text = Path(path).read_text(encoding="utf-8")
+    a, b = text.find(STL_START), text.find(STL_END)
+    if a < 0 or b < a:
+        return False
+    new = text[:a + len(STL_START)] + "\n\n```stl\n" + stl + "```\n\n" + text[b:]
+    if new == text:
+        return False
+    Path(path).write_text(new, encoding="utf-8", newline="\n")
+    return True
+
+
 # ---------------------------------------------------------------- main
 
 def main():
-    out = Path(sys.argv[1] if len(sys.argv) > 1 else "dist")
+    args = sys.argv[1:]
+    readme = None
+    if "--readme" in args:
+        i = args.index("--readme")
+        readme = args[i + 1]
+        del args[i:i + 2]
+    out = Path(args[0] if args else "dist")
     out.mkdir(parents=True, exist_ok=True)
     now = dt.datetime.now(dt.timezone.utc)
     serif, italic = Face(SERIF), Face(SERIF_ITALIC)
-    days = contribution_days()
+    weeks = contribution_weeks()
+    days = [d for w in weeks for d in w][-365:]
+    stl = year_stl([w for w in weeks if len(w) == 7][-52:])  # complete weeks only, so it changes once a week
+    (out / "year.stl").write_text(stl, encoding="utf-8")
+    if readme and update_readme(readme, stl):
+        print(f"updated the 3D year in {readme}")
     commits = recent_commits()
     times = commit_times()
     for theme in THEMES:
