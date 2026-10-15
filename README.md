@@ -3,6 +3,11 @@
   <img alt="Sree Varshan. My last 365 days on GitHub drawn as a glowing ring, one spoke per day, longer and hotter on busier days." src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/year-light.svg" width="100%">
 </picture>
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/band-dark.svg">
+  <img alt="Outlined words drifting across the page, turning molten as they pass the center: Local-first, Rust, Coding agents, On-device AI, Remote desktops, Wayland, Open source. Below them, a ticker of my latest public commits." src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/band-light.svg" width="100%">
+</picture>
+
 <p align="center">
 I build local-first software, mostly in Rust.<br>
 Coding agents that run on your own models, a remote desktop that lives on your phone,<br>
@@ -33,4 +38,4 @@ and research agents that do the reading for you.
 
 <br>
 
-<sub><b>Notes.</b> <i>Fig. 1</i> is my last 365 days on GitHub, one spoke per day, longer and hotter on busier days. Each project is drawn from its own file tree: folders branch out from the center, and every file ends in a spike sized by the file. All of it is redrawn every night by <a href="scripts/render.py">scripts/render.py</a>.</sub>
+<sub><b>Notes.</b> <i>Fig. 1</i> is my last 365 days on GitHub, one spoke per day, longer and hotter on busier days. <i>Fig. 2</i> streams my latest public commits. Each project is drawn from its own file tree: folders branch out from the center, and every file ends in a spike sized by the file. All of it is live data, redrawn every night by <a href="scripts/render.py">scripts/render.py</a>; it plays once when the page loads and stays still if you prefer reduced motion.</sub>

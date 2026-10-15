@@ -22,8 +22,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install font subsetter
-        run: pip install fonttools brotli
+      - name: Install type and image tools
+        run: pip install fonttools brotli uharfbuzz pillow
 
       - name: Draw the year ring and project cards
         run: python scripts/render.py dist
