@@ -1,219 +1,181 @@
 <p align="center">
-	<img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=42&desc=AI%20Systems%20Builder%20%7C%20Arch%20Linux%20Enthusiast%20%7C%20Iris%20Creator&descAlign=50&descAlignY=65&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="header" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=40&fontSize=58&desc=Systems%20%26%20AI%20Engineer%20%E2%80%A2%20Rust%20%E2%80%A2%20Local-first%20tooling&descAlign=50&descAlignY=62&descSize=18&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="Sree Varshan — Systems & AI Engineer" />
 </p>
 
 <p align="center">
-	<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=24&duration=2500&pause=900&color=38BDF8&center=true&vCenter=true&width=960&lines=Building+Iris+AI+OS+on+Arch+Linux;Voice-First+%7C+Offline-First+%7C+Builder+Mode;Engineering+Future-Ready+Systems" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2800&pause=900&color=38BDF8&center=true&vCenter=true&width=760&lines=Building+local-first+AI+tools+in+Rust;xencode+%E2%80%94+a+coding+agent+on+your+own+models;Pocketdesk+%E2%80%94+your+desktop%2C+from+your+phone;Arch+Linux+%C2%B7+Hyprland+%C2%B7+Neovim" alt="Typing intro" />
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/github/followers/sreevarshan-xenoz?style=for-the-badge&label=Followers&color=0ea5e9" alt="followers" />
-	<img src="https://komarev.com/ghpvc/?username=sreevarshan-xenoz&style=for-the-badge&color=0ea5e9" alt="profile views" />
-	<img src="https://img.shields.io/badge/Status-Building%20Iris-0f172a?style=for-the-badge&logo=linux&logoColor=38BDF8" alt="status" />
+  <a href="https://sreevarshan-peach.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-0f172a?style=for-the-badge&logo=vercel&logoColor=38BDF8" alt="Portfolio" /></a>
+  <a href="mailto:sreevarshan1511@gmail.com"><img src="https://img.shields.io/badge/Email-0f172a?style=for-the-badge&logo=gmail&logoColor=38BDF8" alt="Email" /></a>
+  <a href="https://x.com/sreevarshan298"><img src="https://img.shields.io/badge/X-0f172a?style=for-the-badge&logo=x&logoColor=38BDF8" alt="X" /></a>
+  <a href="https://codepen.io/sree-varshan"><img src="https://img.shields.io/badge/CodePen-0f172a?style=for-the-badge&logo=codepen&logoColor=38BDF8" alt="CodePen" /></a>
+  <img src="https://komarev.com/ghpvc/?username=sreevarshan-xenoz&style=for-the-badge&color=0ea5e9&label=Profile+views" alt="Profile views" />
 </p>
 
 <p align="center">
-	<img src="https://img.shields.io/badge/Focus-Voice%20AI%20%2B%20Offline%20First-0f172a?style=for-the-badge&logo=openai&logoColor=38BDF8" alt="focus" />
-	<img src="https://img.shields.io/badge/Open%20to-Collaborations-0f172a?style=for-the-badge&logo=github&logoColor=38BDF8" alt="collaboration" />
-	<img src="https://img.shields.io/badge/Loves-Arch%20Linux-0f172a?style=for-the-badge&logo=arch-linux&logoColor=38BDF8" alt="arch" />
+  <a href="#about">About</a> ·
+  <a href="#work">Selected Work</a> ·
+  <a href="#lab">Lab</a> ·
+  <a href="#stack">Stack</a> ·
+  <a href="#activity">Activity</a>
 </p>
-
-<p align="center">
-	<a href="#about">About Me</a> • 
-	<a href="#play">Play Zone</a> • 
-	<a href="#stack">Tech Stack</a> • 
-	<a href="#stats">GitHub Stats</a> • 
-	<a href="#socials">Connect</a>
-</p>
-
-<div align="center">
-<code>
-<pre align="left" style="display: inline-block; border-radius: 8px; font-family: 'JetBrains Mono', 'Fira Code', monospace; line-height: 1.3; padding: 1.5rem; background-color: #0d1117; color: #c9d1d9; border: 1px solid #30363d;">
-<span style="color: #38BDF8;">       /\</span>          <span style="color: #38BDF8; font-weight: bold;">sreevarshan</span>@<span style="color: #38BDF8; font-weight: bold;">xenoz</span>
-<span style="color: #38BDF8;">      /  \</span>         -----------------
-<span style="color: #38BDF8;">     /    \</span>        <span style="color: #38BDF8; font-weight: bold;">OS:</span> Arch Linux x86_64
-<span style="color: #38BDF8;">    /      \</span>       <span style="color: #38BDF8; font-weight: bold;">Host:</span> Iris AI OS [Builder Edition]
-<span style="color: #38BDF8;">   /   ,,   \</span>      <span style="color: #38BDF8; font-weight: bold;">Kernel:</span> AI-Optimized Custom
-<span style="color: #38BDF8;">  /   |  |   \</span>     <span style="color: #38BDF8; font-weight: bold;">Uptime:</span> 24/7 (Offline-First)
-<span style="color: #38BDF8;"> /_-''    ''-_\</span>    <span style="color: #38BDF8; font-weight: bold;">Shell:</span> Fish (Agentic)
-                   <span style="color: #38BDF8; font-weight: bold;">Theme:</span> Dark Mode Only
-                   <span style="color: #38BDF8; font-weight: bold;">Mission:</span> Building systems, not just models
-</pre>
-</code>
-</div>
-<br>
 
 <a id="about"></a>
 
-# 💫 About Me
+## `$ cat about.rs`
 
-<details open>
-<summary><b>🧠 What I build</b></summary>
-End-to-end AI products that move from idea to deployment: real pipelines, real users, real constraints.
-</details>
+```rust
+let sree = Engineer {
+    name:      "Sree Varshan V",
+    role:      "Systems & AI Engineer",
+    daily:     "Arch Linux · Hyprland · Neovim",
+    writes:    ["Rust", "Python", "TypeScript", "Go", "Kotlin"],
+    builds:    ["local-first AI agents", "native desktop tools", "voice assistants"],
+    believes:  "Your code and your data should stay on your machine.",
+    open_to:   "collaboration on Rust tooling & on-device AI",
+};
 
-<details>
-<summary><b>🚀 Shipped systems</b></summary>
-- AI-based EV trip planning platform with real-time route optimization, analytics, and decision support.<br>
-- Secure real-time chat system with AI-driven features and production-minded architecture.<br>
-- Offline AI coding assistant powered by local LLMs, optimized for privacy and on-device use.
-</details>
-
-<details>
-<summary><b>⚙️ Engineering mindset</b></summary>
-I care about performance, scalability, reliability, and shipping practical software. My work sits at the intersection of machine learning, deep learning, and intelligent agent workflows where latency, resource limits, and UX matter as much as model quality.
-</details>
-
-<details>
-<summary><b>🔬 Current exploration</b></summary>
-- Offline-first AI systems that stay useful without cloud dependency.<br>
-- Real-time intelligence with agent-based orchestration patterns.<br>
-- Bridging advanced AI capabilities with usable, production-ready products.
-</details>
-
-I do not just learn AI. I build with it.
-<br>
-
----
-
-<a id="play"></a>
-
-## 🎮 Play Zone
-
-### AI Systems Quest
-Choose your route and jump into the part of my profile you want to explore first.
-
-| Choice | Mission | Jump |
-|---|---|---|
-| ⚡ Speedrun | See what I build and how I ship | [Start at About](#about) |
-| 🧰 Toolsmith | Inspect the full tools stack | [Open Tech Stack](#stack) |
-| 📈 Signal Mode | Check coding consistency and public activity | [Open GitHub Stats](#stats) |
-| 🤝 Network Mode | Connect and collaborate | [Open Socials](#socials) |
-
-<details>
-<summary><b>🐛 Bug Hunt Mini Challenge (click to play)</b></summary>
-
-Find the hidden issue in this tiny Python snippet.
-
-```python
-def select_best_route(routes):
-	best_score = float("inf")
-	best_route = None
-
-	for route in routes:
-		score = route["time_min"] + route["energy_kwh"] * 0.7
-		if score > best_score:
-			best_score = score
-			best_route = route
-
-	return best_route
+assert!(sree.ships_more_than_tweets());
 ```
 
-Question: Why can this return `None` even when routes exist?
+I build AI products end to end, from the model and the agent loop down to the binary that runs on your machine.
+I care about latency, memory limits, privacy, and whether the thing actually works on a Tuesday afternoon, not only about benchmark scores.
+
+<a id="work"></a>
+
+## 🛠️ Selected Work
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>⚡ <a href="https://github.com/sreevarshan-xenoz/xencode">xencode</a></h3>
+      A terminal-native <b>AI coding agent</b> built for free, open-weight models. It runs on Ollama, llama.cpp, a free Colab GPU or any OpenAI-compatible endpoint, with a provider fallback chain and an approval-gated tool loop.<br/><br/>
+      <sub><code>Rust</code> · <code>20 crates</code> · <code>~3,000 tests</code> · <code>Zed ACP</code></sub>
+    </td>
+    <td width="50%" valign="top">
+      <h3>📱 <a href="https://github.com/sreevarshan-xenoz/Pocketdesk">Pocketdesk</a></h3>
+      <b>Your desktop on your phone.</b> A low-latency remote desktop for Wayland-native Linux and Windows, with the KDE Connect feature set built in. Works over LAN, Tailscale or iroh, with no port forwarding and no account.<br/><br/>
+      <sub><code>Rust</code> · <code>QUIC</code> · <code>H.264/HEVC</code> · <code>Android</code></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🛸 <a href="https://github.com/sreevarshan-xenoz/codehalo">CodeHalo</a></h3>
+      A GPU-accelerated desktop HUD that tracks your AI coding agents (Claude Code, Codex, Cursor, Gemini) in one edge-docked pill. It uses no Electron and no WebView.<br/><br/>
+      <sub><code>Rust</code> · <code>Qt 6 / QML</code> · <code>Windows + Linux</code></sub>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🔗 <a href="https://github.com/sreevarshan-xenoz/fluxbond">FluxBond</a></h3>
+      An Internet bonding layer that merges Wi-Fi, 5G and Ethernet into one resilient link, so ordinary apps get the combined bandwidth without any changes.<br/><br/>
+      <sub><code>Rust</code> · <code>Networking</code> · <code>Packet scheduling</code></sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🧾 <a href="https://github.com/sreevarshan-xenoz/LedgerMind">LedgerMind</a></h3>
+      An AI finance-ops agent for multi-source reconciliation, built for the Razorpay Buildathon. A deterministic core matches 59k+ records/sec, and the agent investigates exceptions with <b>zero false reconciliations</b>.<br/><br/>
+      <sub><code>Python</code> · <code>Agents</code> · <a href="https://ledger-mind-iota.vercel.app">Live demo ↗</a></sub>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🎙️ <a href="https://github.com/sreevarshan-xenoz/Iris-Agent">Iris</a></h3>
+      A voice-first AI assistant for Arch Linux that hears, thinks, remembers and speaks. It runs Faster-Whisper on the GPU, Silero VAD, streaming LLMs and Kokoro TTS, with SQLite memory.<br/><br/>
+      <sub><code>Python</code> · <code>CUDA</code> · <code>Speech</code></sub>
+    </td>
+  </tr>
+</table>
 
 <details>
-<summary><b>✅ Reveal Answer</b></summary>
+<summary><b>🧰 More from the workshop</b></summary>
+<br/>
 
-`best_score` starts at infinity, but the comparison uses `>`.
-No finite `score` is greater than infinity, so `best_route` never updates.
-
-Fix options:
-- Change `if score > best_score:` to `if score < best_score:`
-- Or initialize `best_score = float("-inf")` if you want max-score logic
+| Project | What it is | Stack |
+|---|---|---|
+| [AniTerm](https://github.com/sreevarshan-xenoz/AniTerm) | TUI anime client with AniList sync, MPV playback and themes | Rust · Ratatui |
+| [metapak](https://github.com/sreevarshan-xenoz/metapak) | One TUI for pacman, apt, brew, scoop, npm, pip and cargo | Rust |
+| [project-buddy](https://github.com/sreevarshan-xenoz/project-buddy) | A terminal group chat where your logged-in AI web sessions debate, vote and converge on an answer | Go · TypeScript |
+| [project-friday](https://github.com/sreevarshan-xenoz/project-friday) | A plugin-based desktop AI agent that operates Windows like a human | Rust |
+| [ECHOLINK](https://github.com/sreevarshan-xenoz/ECHOLINK-A-Real-Time-Chat-Application) | Secure real-time chat with AI features | JavaScript |
+| [my-hyprland-config](https://github.com/sreevarshan-xenoz/my-hyprland-config) | The rice I live in every day | Shell · QML |
 
 </details>
-</details>
 
----
+<a id="lab"></a>
 
-<a id="socials"></a>
+## 🔬 In the Lab
 
-## 🌐 Socials
-[![x](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/sreevarshan298)
-[![Codepen](https://img.shields.io/badge/Codepen-000000?logo=codepen&logoColor=white)](https://codepen.io/sree-varshan)
-[![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:sreevarshan1511@gmail.com)
-
----
+- **[riya](https://github.com/sreevarshan-xenoz/riya)** is a research prototype of an AI with an affective core. It combines a Gated DeltaNet + attention hybrid LM, a JEPA world model, and homeostatic drives that shape how it speaks. It trains on a free Colab T4.
+- **On-device inference** means making local models genuinely useful on consumer GPUs instead of being a fallback.
+- **Agent reliability** covers approval gates, fallback chains, and evidence-backed decisions over vibes.
 
 <a id="stack"></a>
 
-## 💻 Tech Stack
-<details open>
-<summary><b>Tap to collapse/expand stack</b></summary>
+## 🧪 Stack
 
-### AI/ML & Agents
-![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)
-![Keras](https://img.shields.io/badge/Keras-%23D00000.svg?style=for-the-badge&logo=Keras&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
-![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
-![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
-
-### Cloud & Infra
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)
-![Alibaba Cloud](https://img.shields.io/badge/AlibabaCloud-%23FF6701.svg?style=for-the-badge&logo=alibabacloud&logoColor=white)
-![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
-![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
-![Netlify](https://img.shields.io/badge/netlify-%23000000.svg?style=for-the-badge&logo=netlify&logoColor=#00C7B7)
-
-### Linux & Core
-![ROS](https://img.shields.io/badge/ros-%230A0FF9.svg?style=for-the-badge&logo=ros&logoColor=white)
-![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
-![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
-
-### Design & Creative
-![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
-![Adobe After Effects](https://img.shields.io/badge/Adobe%20After%20Effects-9999FF.svg?style=for-the-badge&logo=Adobe%20After%20Effects&logoColor=white)
-![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-%2331A8FF.svg?style=for-the-badge&logo=adobe%20photoshop&logoColor=white)
-![Krita](https://img.shields.io/badge/Krita-203759?style=for-the-badge&logo=krita&logoColor=EEF37B)
-![Gimp](https://img.shields.io/badge/Gimp-657D8B?style=for-the-badge&logo=gimp&logoColor=FFFFFF)
-![Canva](https://img.shields.io/badge/Canva-%2300C4CC.svg?style=for-the-badge&logo=Canva&logoColor=white)
-
-</details>
-
----
-
-<a id="stats"></a>
-
-## 📊 GitHub Stats
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true" alt="stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=sreevarshan-xenoz&theme=catppuccin_mocha&hide_border=false&include_all_commits=true&count_private=true&layout=compact" alt="top langs" />
+<p>
+  <b>Languages</b><br/>
+  <img src="https://skillicons.dev/icons?i=rust,py,ts,go,kotlin,java,lua,bash&perline=10" alt="Languages" />
+</p>
+<p>
+  <b>AI / ML</b><br/>
+  <img src="https://skillicons.dev/icons?i=pytorch,tensorflow,sklearn,opencv,fastapi&perline=10" alt="AI and ML" />
+</p>
+<p>
+  <b>Systems, Apps &amp; Infra</b><br/>
+  <img src="https://skillicons.dev/icons?i=linux,arch,qt,react,sqlite,nginx,aws,azure,vercel,githubactions&perline=10" alt="Systems and infra" />
+</p>
+<p>
+  <b>Tools &amp; Creative</b><br/>
+  <img src="https://skillicons.dev/icons?i=neovim,git,blender,ae,ps&perline=10" alt="Tools and creative" />
 </p>
 
 <details>
-<summary><b>Open extra live widgets & activity graphs</b></summary>
+<summary><b>🐛 Side quest: spot the bug</b></summary>
+<br/>
 
-## 📈 Activity & Streak
-![](https://github-readme-streak-stats.herokuapp.com/?user=sreevarshan-xenoz&theme=catppuccin-mocha&hide_border=false)<br/>
-[![Sree's github activity graph](https://github-readme-activity-graph.vercel.app/graph?username=sreevarshan-xenoz&theme=react-dark&hide_border=true)](https://github.com/sreevarshan-xenoz)
+This route picker returns `None` even when routes exist. Why?
 
-## 🏆 GitHub Trophies
-![](https://github-profile-trophy.vercel.app/?username=sreevarshan-xenoz&theme=catppuccin_mocha&no-frame=false&no-bg=true&margin-w=4)
+```python
+def select_best_route(routes):
+    best_score = float("inf")
+    best_route = None
 
-## ✍️ Random Dev Quote
-![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
+    for route in routes:
+        score = route["time_min"] + route["energy_kwh"] * 0.7
+        if score > best_score:
+            best_score = score
+            best_route = route
 
-## 🔝 Top Contributed Repo
-![](https://github-contributor-stats.vercel.app/api?username=sreevarshan-xenoz&limit=5&theme=catppuccin_mocha&combine_all_yearly_contributions=true)
+    return best_route
+```
+
+<details>
+<summary><b>✅ Reveal answer</b></summary>
+
+`best_score` starts at infinity, but the comparison is `>`. No finite score is greater than infinity, so `best_route` never updates.
+The fix is `if score < best_score:`. If you wanted the max instead, start from `float("-inf")`.
 
 </details>
+</details>
 
----
+<a id="activity"></a>
 
-## 🐍 Contribution Snake
+## 📈 Activity
+
+<p align="center">
+  <img height="165" src="https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d1117&title_color=38bdf8&icon_color=38bdf8&text_color=c9d1d9" alt="GitHub stats" />
+  <img height="165" src="https://streak-stats.demolab.com/?user=sreevarshan-xenoz&hide_border=true&background=0d1117&ring=38BDF8&fire=38BDF8&currStreakLabel=38BDF8&sideLabels=c9d1d9&dates=8b949e&currStreakNum=f8fafc&sideNums=f8fafc" alt="GitHub streak" />
+</p>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg">
-    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg">
+    <img alt="Contribution grid snake animation" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/github-contribution-grid-snake.svg">
   </picture>
 </p>
 
----
-
-[![](https://visitcount.itsvg.in/api?id=sreevarshan-xenoz&icon=1&color=0)](https://visitcount.itsvg.in)
-
-
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&section=footer&height=110&color=0:0ea5e9,30:0b3b66,65:1e293b,100:0f172a" alt="" />
+</p>
