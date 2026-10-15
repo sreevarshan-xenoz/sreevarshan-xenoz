@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 """Draws the animated artwork on my GitHub profile.
 
-  year-{theme}.svg          the last 365 days of contributions as a ring, one spoke per day
-  band-{theme}.svg          a kinetic type band and a ticker of my latest public commits
-  card-{repo}-{theme}.svg   a featured repository's file tree, drawn radially
+  year-{theme}.svg          Fig. 1: the last 365 days of contributions as a ring, one spoke per day
+  band-{theme}.svg          Fig. 2: a kinetic type band over a ticker of my latest public commits
+  rule-{name}-{theme}.svg   section headers: a hairline with a spark that runs along it
+  card-{repo}-{theme}.svg   Fig. 3: each featured repository's file tree, drawn radially
+  ridge-{theme}.svg         Fig. 4: my public commits by week and hour of day, as ridgelines
+  fin-{theme}.svg           the closing card
 
-Every image plays a reveal when it loads and keeps some ambient motion after;
-with reduced motion requested they show the finished still. Data comes from
-the GitHub API using GITHUB_TOKEN.
+Every image plays a reveal when it loads and keeps some ambient motion after; with
+reduced motion requested they show the finished still. Effects that only matter
+during a reveal remove themselves when done, so the page stays light.
+Data comes from the GitHub API using GITHUB_TOKEN.
 
-Display type is set as outlines (HarfBuzz shaping, fontTools outlines) so it can
-be animated glyph by glyph; small mono text embeds a subset font.
+Display type is set as outlines (HarfBuzz shaping, fontTools outlines) so it can be
+animated glyph by glyph; small mono text embeds a subset font.
 Fonts: Instrument Serif and IBM Plex Mono, SIL Open Font License 1.1.
 
 Usage: GITHUB_TOKEN=... python scripts/render.py [out_dir]
 """
 import base64
+import collections
 import datetime as dt
 import html
 import io
@@ -25,6 +30,7 @@ import os
 import random
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -36,6 +42,7 @@ from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFilter
 
 USER = "sreevarshan-xenoz"
+TZ = dt.timezone(dt.timedelta(hours=5, minutes=30))  # my local time (IST), for the hour-of-day figure
 PROJECTS = [  # public repos only: repo, display name, tagline (under ~33 characters)
     ("xencode", "xencode", "local-first AI coding agent"),
     ("Pocketdesk", "Pocketdesk", "your desktop, on your phone"),
@@ -45,21 +52,27 @@ PROJECTS = [  # public repos only: repo, display name, tagline (under ~33 charac
     ("LedgerMind", "LedgerMind", "finance-ops reconciliation agent"),
 ]
 BAND_WORDS = ["Local-first", "Rust", "Coding agents", "On-device AI", "Remote desktops", "Wayland", "Open source"]
+RULES = {  # section headers: name -> (label, note, when its spark first runs)
+    "work": ("FIG. 3 · SELECTED WORK", "SIX PUBLIC PROJECTS, EACH DRAWN FROM ITS OWN FILE TREE", 4.0),
+    "ship": ("FIG. 4 · WHEN I SHIP", "MY PUBLIC COMMITS, WEEK BY WEEK AND HOUR BY HOUR", 6.5),
+}
 SKIP_DIRS = {"node_modules", "target", "dist", "build", "vendor", ".git", "__pycache__", ".next", ".venv"}
 
 THEMES = {
     "dark": {
-        "ink": "#f0f6fc", "dim": "#9198a1", "faint": "#3d444d", "branch": "#6e7681",
+        "bg": "#0d1117", "ink": "#f0f6fc", "dim": "#9198a1", "faint": "#3d444d", "branch": "#6e7681",
         "hot": "#fff7ed", "trace": "#fbbf24", "spark": "#fde68a", "beam": "#fff1d6", "glow": 0.5,
         "heat": ["#7f1d1d", "#c2410c", "#f97316", "#fbbf24", "#fff7ed"],
         "molten": ["#fff7ed", "#fde68a", "#fb923c", "#c2410c"], "pour": "#fbbf24",
+        "ridge": ["#3d444d", "#f97316", "#fde68a"],
     },
     "light": {
-        "ink": "#1f2328", "dim": "#59636e", "faint": "#d1d9e0", "branch": "#8c959f",
+        "bg": "#ffffff", "ink": "#1f2328", "dim": "#59636e", "faint": "#d1d9e0", "branch": "#8c959f",
         "hot": "#2a0f05", "trace": "#c2410c", "spark": "#c2410c", "beam": "#7c2d12", "glow": 0,
         "heat": ["#fdba74", "#f97316", "#ea580c", "#9a3412", "#431407"],
         "card_heat": ["#f97316", "#ea580c", "#c2410c", "#7c2d12", "#431407"],  # thin strokes need deeper ink
         "molten": ["#7c2d12", "#c2410c", "#ea580c", "#fb923c"], "pour": "#ea580c",
+        "ridge": ["#c9d1d9", "#ea580c", "#7c2d12"],
     },
 }
 
@@ -68,6 +81,7 @@ SERIF = "instrument-serif-latin-400-normal.woff2"
 SERIF_ITALIC = "instrument-serif-latin-400-italic.woff2"
 MONO_FILES = {"M": "ibm-plex-mono-latin-400-normal.woff2", "MM": "ibm-plex-mono-latin-500-normal.woff2"}
 MONTHS = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+WEEKDAYS = "Monday Tuesday Wednesday Thursday Friday Saturday Sunday".split()
 
 OUT = "cubic-bezier(.16,1,.3,1)"     # fast start, long settle
 INOUT = "cubic-bezier(.65,0,.35,1)"
@@ -111,6 +125,12 @@ def _request(url, body=None):
                     time.sleep(3)
                     continue
                 return json.load(res)
+        except urllib.error.HTTPError as e:
+            if e.code < 500 and e.code not in (403, 429):  # a real answer, not a hiccup
+                raise
+            if attempt == 5:
+                raise
+            time.sleep(2 + attempt * 2)
         except OSError:
             if attempt == 5:
                 raise
@@ -164,12 +184,42 @@ def recent_commits(limit=8):
     return found[:limit]
 
 
-# ---------------------------------------------------------------- type
+def commit_times(days=365, max_pages=30):
+    """When I committed to my public repos over the last year, as UTC datetimes."""
+    since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    repos = [r for r in api(f"users/{USER}/repos?type=owner&sort=pushed&per_page=100")
+             if not r["fork"] and r["pushed_at"] >= since]
+    seen, out = set(), []
+    for r in repos:
+        for page in range(1, max_pages + 1):
+            try:
+                commits = api(f"repos/{USER}/{r['name']}/commits?author={USER}&since={since}&per_page=100&page={page}")
+            except urllib.error.HTTPError:  # an empty repository answers 409
+                break
+            for c in commits:
+                if c["sha"] not in seen:
+                    seen.add(c["sha"])
+                    out.append(dt.datetime.fromisoformat(c["commit"]["author"]["date"].replace("Z", "+00:00")))
+            if len(commits) < 100:
+                break
+    return out
+
+
+# ---------------------------------------------------------------- type and path helpers
 
 def f1(v):
     s = f"{v:.1f}"
     s = s[:-2] if s.endswith(".0") else s
     return "0" if s == "-0" else s
+
+
+def nums(*vals):
+    """Numbers for path data, dropping the spaces SVG allows you to drop before a minus sign."""
+    out = ""
+    for v in vals:
+        s = f1(v)
+        out += s if not out or s[0] == "-" else " " + s
+    return out
 
 
 def esc(s):
@@ -193,13 +243,14 @@ class Face:
         self.key = "si" if "italic" in file else "sn"
 
     def shape(self, text, size):
+        """[(glyph, x, character index, advance)], width."""
         buf = hb.Buffer()
         buf.add_str(text)
         buf.guess_segment_properties()
         hb.shape(self.hb, buf, {"kern": True, "liga": True})
         s, x, out = size / self.upem, 0, []
         for info, pos in zip(buf.glyph_infos, buf.glyph_positions):
-            out.append((self.order[info.codepoint], (x + pos.x_offset) * s))
+            out.append((self.order[info.codepoint], (x + pos.x_offset) * s, info.cluster, pos.x_advance * s))
             x += pos.x_advance
         return out, x * s
 
@@ -218,14 +269,30 @@ class Face:
         return self.hmtx[self.cmap[ord(ch)]][0] * size / self.upem
 
     def run(self, text, x, y, size, anchor="start"):
-        """Glyph outlines for a line of text: [(path, left x)], width, start x."""
+        """Glyph outlines for a line of text: [(path, left x, character index)], width, start x."""
         glyphs, width = self.shape(text, size)
         x0 = x - width if anchor == "end" else x - width / 2 if anchor == "middle" else x
         out = []
-        for g, gx in glyphs:
+        for g, gx, cl, _ in glyphs:
             d = self.path(g, x0 + gx, y, size)
             if d:
-                out.append((d, x0 + gx))
+                out.append((d, x0 + gx, cl))
+        return out, width, x0
+
+    def words(self, text, x, y, size, doc, anchor="middle"):
+        """Glyphs grouped by word, each a <use> of a shared definition:
+        [(word, [elements], left, right)], width, start x."""
+        glyphs, width = self.shape(text, size)
+        x0 = x - width if anchor == "end" else x - width / 2 if anchor == "middle" else x
+        s = size / self.upem
+        out, start = [], 0
+        for word in text.split(" "):
+            end = start + len(word)
+            mine = [(g, gx, adv) for g, gx, cl, adv in glyphs if start <= cl < end]
+            uses = [f'<use href="#{doc.glyph(self, g)}" transform="translate({nums(x0 + gx, y)})scale({s:.4f} {-s:.4f})"/>'
+                    for g, gx, _ in mine if self.units(g)]
+            out.append((word, uses, x0 + mine[0][1], x0 + mine[-1][1] + mine[-1][2]))
+            start = end + 1
         return out, width, x0
 
 
@@ -272,16 +339,16 @@ class Doc:
         return f"{prefix}{self._n}"
 
     def glyph(self, face, glyph):
+        """A glyph defined once in font units, for <use> wherever it repeats."""
         gid = f"{face.key}-{glyph}".replace(".", "_")
         if gid not in self._glyphs:
             self._glyphs.add(gid)
-            self.defs.append(f'<path id="{gid}" d="{face.units(glyph)}"/>')
+            self.defs.append(f'<path id="{gid}" d="{face.units(glyph)}" pathLength="1"/>')
         return gid
 
     def render(self, label):
-        return (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
-                f'width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}" role="img" '
-                f'aria-label="{html.escape(label)}"><style>{self.mono.css()}{BASE_CSS}{"".join(self.css)}{REDUCED}</style>'
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}" '
+                f'role="img" aria-label="{html.escape(label)}"><style>{self.mono.css()}{BASE_CSS}{"".join(self.css)}{REDUCED}</style>'
                 f'<defs>{"".join(self.defs)}</defs>{"".join(self.body)}</svg>\n')
 
 
@@ -290,7 +357,7 @@ def typed(doc, text, x, y, size, fill, start, ls=0.0, family="M", anchor="start"
     adv = 0.6 * size + ls
     n = max(len(text), 1)
     w = n * adv
-    x0 = x - w if anchor == "end" else x
+    x0 = x - w if anchor == "end" else x - w / 2 if anchor == "middle" else x
     mid = doc.uid("tm")
     box = f'x="{f1(x0 - 2)}" y="{f1(y - size * 1.1)}" width="{f1(w + 4)}" height="{f1(size * 1.6)}"'
     doc.defs.append(f'<mask id="{mid}" maskUnits="userSpaceOnUse" {box}><rect class="tw" {box} fill="#fff" '
@@ -321,13 +388,13 @@ def odometer(doc, face, text, x, y, size, anchor, start, fill):
             box = f'x="{f1(cx - 4)}" y="{f1(top)}" width="{f1(w + 8)}" height="{f1(bottom - top)}"'
             doc.defs.append(f'<mask id="{mid}" maskUnits="userSpaceOnUse" {box}><rect {box} fill="url(#feather)"/></mask>')
             strip = []
-            for j in range(final + 1):
+            for j in range(final + 1):  # in the scaled group below: font units, y up
                 dch = str(j % 10)
-                gx = cx + (w - face.advance(dch, size)) / 2
-                gid = doc.glyph(face, face.cmap[ord(dch)])
-                strip.append(f'<use href="#{gid}" xlink:href="#{gid}" transform="translate({f1(gx)} {f1(y + j * line)}) scale({s:.4f} {-s:.4f})"/>')
+                dx = (w - face.advance(dch, size)) / 2 / s
+                strip.append(f'<use href="#{doc.glyph(face, face.cmap[ord(dch)])}" x="{dx:.0f}" y="{-j * line / s:.0f}"/>')
             out.append(f'<g mask="url(#{mid})"><g class="odo" fill="{fill}" style="transform:translateY({f1(-final * line)}px);'
-                       f'animation-duration:{1.5 + col * 0.15:.2f}s;animation-delay:{start + col * 0.06:.2f}s">{"".join(strip)}</g></g>')
+                       f'animation-duration:{1.5 + col * 0.15:.2f}s;animation-delay:{start + col * 0.06:.2f}s">'
+                       f'<g transform="translate({nums(cx, y)})scale({s:.4f} {-s:.4f})">{"".join(strip)}</g></g></g>')
         else:
             d = face.path(face.cmap[ord(ch)], cx, y, size)
             if d:
@@ -345,8 +412,8 @@ def pt(cx, cy, r, deg):
 def sector(cx, cy, r1, r2, a1, a2):
     (x1, y1), (x2, y2) = pt(cx, cy, r1, a1), pt(cx, cy, r2, a1)
     (x3, y3), (x4, y4) = pt(cx, cy, r2, a2), pt(cx, cy, r1, a2)
-    return (f"M{f1(x1)} {f1(y1)}L{f1(x2)} {f1(y2)}A{f1(r2)} {f1(r2)} 0 0 1 {f1(x3)} {f1(y3)}"
-            f"L{f1(x4)} {f1(y4)}A{f1(r1)} {f1(r1)} 0 0 0 {f1(x1)} {f1(y1)}Z")
+    return (f"M{nums(x1, y1)}L{nums(x2, y2)}A{nums(r2, r2)} 0 0 1 {nums(x3, y3)}"
+            f"L{nums(x4, y4)}A{nums(r1, r1)} 0 0 0 {nums(x1, y1)}Z")
 
 
 def wedge(cx, cy, r1, r2, lead, span, slices, color, peak):
@@ -376,6 +443,10 @@ def hex_rgb(c):
     return tuple(int(c[i:i + 2], 16) for i in (1, 3, 5))
 
 
+def mix(c1, c2, k):
+    return "#%02x%02x%02x" % tuple(round(a + (b - a) * k) for a, b in zip(hex_rgb(c1), hex_rgb(c2)))
+
+
 def glow_image(lines, w, h, width=5.0, sigma=6.0, scale=0.5, gain=1.7):
     """A blurred glow rendered once as a small WebP, so the browser composites a picture
     instead of running a blur filter on every animation frame."""
@@ -393,19 +464,34 @@ def glow_image(lines, w, h, width=5.0, sigma=6.0, scale=0.5, gain=1.7):
     rgb = rgb.filter(ImageFilter.GaussianBlur(2))
     rgb.putalpha(alpha)
     buf = io.BytesIO()
-    rgb.save(buf, "WEBP", quality=72, method=6)
+    rgb.save(buf, "WEBP", quality=60, method=6)
     return base64.b64encode(buf.getvalue()).decode()
 
 
 def circle_path(cx, cy, r):
-    return f"M{f1(cx)} {f1(cy - r)}A{f1(r)} {f1(r)} 0 1 1 {f1(cx)} {f1(cy + r)}A{f1(r)} {f1(r)} 0 1 1 {f1(cx)} {f1(cy - r)}"
+    return f"M{nums(cx, cy - r)}A{nums(r, r)} 0 1 1 {nums(cx, cy + r)}A{nums(r, r)} 0 1 1 {nums(cx, cy - r)}"
 
 
 def day(d):
     return f"{d.day} {MONTHS[d.month - 1]} {d.year}"
 
 
-# ---------------------------------------------------------------- the year ring
+def glint(doc, clip_id, shapes, x0, x1, y0, y1, color, period, delay):
+    """A bar of light that passes over some glyphs (the `shapes` markup) every `period` seconds."""
+    gid = doc.uid("gg")
+    travel = x1 - x0 + 160
+    doc.defs += [f'<clipPath id="{clip_id}">{shapes}</clipPath>',
+                 f'<linearGradient id="{gid}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{color}" stop-opacity="0"/>'
+                 f'<stop offset=".5" stop-color="{color}"/><stop offset="1" stop-color="{color}" stop-opacity="0"/></linearGradient>']
+    doc.css.append(f".{gid}{{transform:translateX({f1(travel)}px);animation:{gid} {period}s {INOUT} {delay:.2f}s infinite}}"
+                   f"@keyframes {gid}{{0%{{transform:translateX(0);visibility:visible}}13%{{transform:translateX({f1(travel)}px);visibility:hidden}}"
+                   f"100%{{transform:translateX({f1(travel)}px);visibility:hidden}}}}")
+    h = y1 - y0
+    return (f'<g clip-path="url(#{clip_id})"><path class="{gid}" d="M{nums(x0 - 80, y0)}h46l{nums(-h * 0.35, h)}h-46z" '
+            f'fill="url(#{gid})"/></g>')
+
+
+# ---------------------------------------------------------------- Fig. 1, the year ring
 
 def render_year(days, theme, serif, italic):
     th = THEMES[theme]
@@ -434,7 +520,6 @@ def render_year(days, theme, serif, italic):
     def passes(a):
         return S + P * (((a + 90) % 360) / 360)
 
-    # spokes: a heat layer that stays, and a white-hot copy that cools away
     stops = [(r0 + L * f, hex_rgb(c)) for f, c in zip((0, 0.3, 0.58, 0.82, 1), th["heat"])]
 
     def heat_at(r):
@@ -444,12 +529,13 @@ def render_year(days, theme, serif, italic):
                 return tuple(round(a + (b - a) * k) for a, b in zip(ca, cb))
         return stops[-1][1]
 
+    # spokes: a heat layer that stays, and a white-hot copy that cools away and flashes when the beam passes
     spokes, hots, dots, glow_lines = [], [], [], []
     for i, (_, c) in enumerate(days):
         a = ang(i)
         if c:
             (x1, y1), (x2, y2) = pt(cx, cy, r0, a), pt(cx, cy, r0 + reach(c), a)
-            d = f'd="M{f1(x1)} {f1(y1)}L{f1(x2)} {f1(y2)}" pathLength="1"'
+            d = f'd="M{nums(x1, y1)}l{nums(x2 - x1, y2 - y1)}" pathLength="1"'
             spokes.append(f'<path {d} style="--t:{born(i):.3f}s"/>')
             hots.append(f'<path {d} style="--t:{born(i):.3f}s;--h:{passes(a):.2f}s"/>')
             for k in range(5):
@@ -466,7 +552,7 @@ def render_year(days, theme, serif, italic):
             continue
         r = r0 + reach(v)
         (sx, sy), (ex, ey) = pt(cx, cy, r, a_start), pt(cx, cy, r, 270 - gap / 2)
-        grooves.append(f'<path class="gv" style="--t:{0.35 + k * 0.12:.2f}s" d="M{f1(sx)} {f1(sy)}A{f1(r)} {f1(r)} 0 1 1 {f1(ex)} {f1(ey)}"/>')
+        grooves.append(f'<path class="gv" style="--t:{0.35 + k * 0.12:.2f}s" d="M{nums(sx, sy)}A{nums(r, r)} 0 1 1 {nums(ex, ey)}"/>')
         groove_labels.append(f'<text class="m fd" style="--t:{0.5 + k * 0.12:.2f}s" x="{cx}" y="{f1(cy - r)}" font-size="10" text-anchor="middle" '
                              f'dominant-baseline="central" fill="{th["dim"]}">{doc.mono("M", str(v))}</text>')
 
@@ -476,7 +562,7 @@ def render_year(days, theme, serif, italic):
         if d.day != 1 or min(a + 90, 270 - a) < 9:  # leave the seam to the NOW marker
             continue
         (tx1, ty1), (tx2, ty2) = pt(cx, cy, r0 - 12, a), pt(cx, cy, r0 - 4, a)
-        months.append(f'<path class="fd" style="--t:{born(i):.2f}s" d="M{f1(tx1)} {f1(ty1)}L{f1(tx2)} {f1(ty2)}" stroke="{th["faint"]}"/>')
+        months.append(f'<path class="fd" style="--t:{born(i):.2f}s" d="M{nums(tx1, ty1)}L{nums(tx2, ty2)}" stroke="{th["faint"]}"/>')
         lx, ly = pt(cx, cy, R + 34, a)
         name = MONTHS[d.month - 1] + (f" {d.year}" if d.month == 1 else "")
         months.append(f'<text class="m ml" style="--t:{born(i):.2f}s;--g:{passes(a):.2f}s" x="{f1(lx)}" y="{f1(ly)}" font-size="12" '
@@ -493,8 +579,8 @@ def render_year(days, theme, serif, italic):
 
     # embers drifting off the hottest days
     sparks = []
-    hot_days = sorted(range(n), key=lambda i: -counts[i])[:26]
-    for k in range(34):
+    hot_days = sorted(range(n), key=lambda i: -counts[i])[:24]
+    for k in range(30):
         i = hot_days[k % len(hot_days)]
         a = ang(i) + rng.uniform(-9, 9)
         x, y = pt(cx, cy, r0 + reach(counts[i]) + 3, ang(i))
@@ -507,20 +593,26 @@ def render_year(days, theme, serif, italic):
 
     # the name: outlines trace in, molten fill pours up through them, a glint passes now and then
     size = 62
-    line1, w1, x1 = italic.run("Sree", cx, cy - 2, size, "middle")
-    line2, w2, x2 = italic.run("Varshan", cx, cy + 50, size, "middle")
-    name_paths = "".join(f'<path d="{d}"/>' for d, _ in line1 + line2)
-    trace_paths = "".join(f'<path d="{d}" pathLength="1" style="--k:{k}"/>' for k, (d, _) in enumerate(line1 + line2))
+    sn = size / italic.upem
+    lines, uses = [], []
+    for word, base_y in (("Sree", cy - 2), ("Varshan", cy + 50)):
+        glyphs, width = italic.shape(word, size)
+        left = cx - width / 2
+        lines.append((left, width))
+        uses += [f'<use href="#{doc.glyph(italic, g)}" transform="translate({nums(left + gx, base_y)})scale({sn:.4f} {-sn:.4f})"'
+                 for g, gx, _, _ in glyphs if italic.units(g)]
+    (x1, w1), (x2, w2) = lines
+    name_paths = "".join(u + "/>" for u in uses)
+    trace_paths = "".join(u + f' style="--k:{k}"/>' for k, u in enumerate(uses))  # dash settings inherit into each glyph
     nx0, nx1 = min(x1, x2) - 12, max(x1 + w1, x2 + w2) + 12
     ny0, ny1 = cy - 2 - size * 0.82, cy + 50 + size * 0.28
     flood_h = ny1 - ny0 + 30
-    glint_x = nx1 - nx0 + 200
 
     # corner notes
     total, active = sum(counts), sum(1 for c in counts if c)
     fig, _, _ = italic.run("Fig. 1", 40, 70, 38)
     span = f"{MONTHS[days[0][0].month - 1]} {days[0][0].year} – {MONTHS[days[-1][0].month - 1]} {days[-1][0].year}"
-    notes = ["".join(f'<path class="fg" style="--k:{k}" d="{d}" fill="{th["ink"]}"/>' for k, (d, _) in enumerate(fig)),
+    notes = ["".join(f'<path class="fg" style="--k:{k}" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(fig)),
              typed(doc, "ONE SPOKE PER DAY", 40, 98, 13, th["dim"], 2.5, 1.5),
              typed(doc, span, 40, 118, 13, th["dim"], 2.8, 1.5),
              odometer(doc, serif, f"{total:,}", 960, 80, 54, "end", 2.35, th["ink"]),
@@ -542,11 +634,8 @@ def render_year(days, theme, serif, italic):
         f'<radialGradient id="halo"><stop offset="0" stop-color="{th["hot"]}"/><stop offset=".18" stop-color="{th["trace"]}" stop-opacity=".55"/>'
         f'<stop offset=".5" stop-color="{th["trace"]}" stop-opacity=".12"/><stop offset="1" stop-color="{th["trace"]}" stop-opacity="0"/></radialGradient>',
         '<linearGradient id="floodg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".12" stop-color="#fff"/></linearGradient>',
-        f'<linearGradient id="glintg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{th["pour"]}" stop-opacity="0"/>'
-        f'<stop offset=".5" stop-color="{th["pour"]}"/><stop offset="1" stop-color="{th["pour"]}" stop-opacity="0"/></linearGradient>',
         f'<mask id="flood" maskUnits="userSpaceOnUse" x="{f1(nx0)}" y="{f1(ny0 - 30)}" width="{f1(nx1 - nx0)}" height="{f1(flood_h)}">'
         f'<rect class="fl" x="{f1(nx0)}" y="{f1(ny0 - 30)}" width="{f1(nx1 - nx0)}" height="{f1(flood_h)}" fill="url(#floodg)"/></mask>',
-        f'<clipPath id="nmc">{name_paths}</clipPath>',
         f'<path id="lr" d="{circle_path(cx, cy, lr)}" fill="none"/>',
     ]
 
@@ -560,7 +649,7 @@ def render_year(days, theme, serif, italic):
         f'<g class="dz" fill="{th["faint"]}">{"".join(dots)}</g>',
         # the intro scanner makes one fast turn while the days burst out behind it
         f'<g class="beam0">{wedge(cx, cy, b1, b2, a_start, 30, 10, th["beam"], 0.16)}'
-        f'<path d="M{f1(lx1)} {f1(ly1)}L{f1(lx2)} {f1(ly2)}" stroke="{th["beam"]}" stroke-width="1.4" stroke-linecap="round"/></g>',
+        f'<path d="M{nums(lx1, ly1)}L{nums(lx2, ly2)}" stroke="{th["beam"]}" stroke-width="1.4" stroke-linecap="round"/></g>',
         (f'<image class="glow" opacity="{th["glow"] * 1.1:.2f}" x="0" y="0" width="1000" height="700" '
          f'href="data:image/webp;base64,{glow_image(glow_lines, 1000, 700)}"/>') if th["glow"] else "",
         f'<g id="sp" stroke="url(#heat)" stroke-width="1.8" stroke-linecap="round">{"".join(spokes)}</g>',
@@ -572,14 +661,14 @@ def render_year(days, theme, serif, italic):
         f'fill="{th["ink"]}">{doc.mono("MM", "NOW")}</text><path d="M{cx} {cy - R - 18}V{cy - R - 6}" stroke="{th["ink"]}"/></g>',
         f'<g class="ember" fill="{th["spark"]}">{"".join(sparks)}</g>',
         "".join(pings),
-        f'<g class="rt"><g class="spin"><text class="mm" font-size="12" fill="{th["dim"]}"><textPath href="#lr" xlink:href="#lr" '
+        f'<g class="rt"><g class="spin"><text class="mm" font-size="12" fill="{th["dim"]}"><textPath href="#lr" '
         f'textLength="{f1(2 * math.pi * lr - 9)}" lengthAdjust="spacing">{doc.mono("MM", ring_text)}</textPath></text></g></g>',
         # the name
-        '<use class="nmglow" href="#nm" xlink:href="#nm" fill="#f97316" filter="url(#blur)"/>' if th["glow"] else "",
-        f'<g class="run" style="--e:3.9s" mask="url(#flood)"><use class="nmf" href="#nm" xlink:href="#nm" fill="{th["ink"]}"/></g>',
-        f'<use class="done" style="--e:3.9s" href="#nm" xlink:href="#nm" fill="{th["ink"]}"/>',
-        f'<g class="trace" fill="none" stroke="{th["trace"]}" stroke-width="1.1">{trace_paths}</g>',
-        f'<g clip-path="url(#nmc)"><path class="gl" d="M{f1(nx0 - 90)} {f1(ny0 - 10)}h46l-50 {f1(ny1 - ny0 + 20)}h-46z" fill="url(#glintg)"/></g>',
+        '<use class="nmglow" href="#nm" fill="#f97316" filter="url(#blur)"/>' if th["glow"] else "",
+        f'<g class="run" style="--e:3.9s" mask="url(#flood)"><use class="nmf" href="#nm" fill="{th["ink"]}"/></g>',
+        f'<use class="done" style="--e:3.9s" href="#nm" fill="{th["ink"]}"/>',
+        f'<g class="trace" fill="none" stroke="{th["trace"]}" stroke-width="{f1(1.1 / sn)}">{trace_paths}</g>',
+        glint(doc, "nmc", name_paths, nx0, nx1, ny0 - 10, ny1 + 10, th["pour"], 9, 3.7),
         f'<circle class="sw" cx="{cx}" cy="{cy}" r="{r0}" fill="none" stroke="{th["trace"]}" stroke-width="1.4"/>',
         f'<circle class="sw sw2" cx="{cx}" cy="{cy}" r="{r0}" fill="none" stroke="{th["trace"]}" stroke-width=".8"/>',
     ] + notes
@@ -617,7 +706,7 @@ def render_year(days, theme, serif, italic):
         "100%{opacity:0;transform:translate(var(--dx),var(--dy))}}"
         ".rt{animation:fade 1.4s ease-out 1.3s backwards}"
         f".spin{{transform-origin:{cx}px {cy}px;animation:spin 150s steps(1800) infinite}}"  # 12 steps a second is plenty this slow
-        f".trace path{{animation:grow 1.2s {INOUT} backwards;animation-delay:calc(.95s + var(--k) * 70ms)}}"
+        f".trace use{{animation:grow 1.2s {INOUT} backwards;animation-delay:calc(.95s + var(--k) * 70ms)}}"
         ".trace{opacity:0;animation:trace 3.3s linear .95s}"
         "@keyframes trace{0%{opacity:1}62%{opacity:1}100%{opacity:0}}"
         f".fl{{animation:flood 1.1s {INOUT} 1.85s backwards}}"
@@ -626,9 +715,6 @@ def render_year(days, theme, serif, italic):
         f"@keyframes pour{{from{{fill:{th['pour']}}}}}"
         ".nmglow{opacity:0;animation:flare 2.2s ease-out 1.9s backwards,fin 4.1s linear forwards}"  # removed once done, so its blur stops costing
         "@keyframes flare{0%{opacity:0}30%{opacity:.75}100%{opacity:0}}"
-        f".gl{{transform:translateX({f1(glint_x)}px);animation:sheen 9s {INOUT} 3.7s infinite}}"
-        f"@keyframes sheen{{0%{{transform:translateX(0);visibility:visible}}13%{{transform:translateX({f1(glint_x)}px);visibility:hidden}}"
-        f"100%{{transform:translateX({f1(glint_x)}px);visibility:hidden}}}}"
         f".sw{{opacity:0;transform-box:fill-box;transform-origin:center;animation:shock 1.9s {OUT} 2.6s}}"
         ".sw2{animation-delay:2.78s}"
         "@keyframes shock{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(4.6)}}"
@@ -639,25 +725,30 @@ def render_year(days, theme, serif, italic):
     return doc.render(label)
 
 
-# ---------------------------------------------------------------- the kinetic band
+# ---------------------------------------------------------------- Fig. 2, the kinetic band
 
 def render_band(commits, theme, italic, now):
     th = THEMES[theme]
     doc = Doc(1000, 220)
     size, base = 76, 128
+    s = size / italic.upem
 
-    # row one: big outlined words that turn molten as they cross the spotlight
+    # row one: big outlined words that turn molten as they cross the spotlight.
+    # Each letter is defined once and reused, which keeps this file small.
     parts, x = [], 0.0
     for w in BAND_WORDS:
-        glyphs, width, _ = italic.run(w, x, base, size)
-        parts += [f'<path d="{d}"/>' for d, _ in glyphs]
+        glyphs, width = italic.shape(w, size)
+        for g, gx, _, _ in glyphs:
+            if italic.units(g):
+                parts.append(f'<use href="#{doc.glyph(italic, g)}" transform="translate({nums(x + gx, base)})scale({s:.4f} {-s:.4f})"/>')
         x += width + 30
-        parts.append(f'<circle cx="{f1(x)}" cy="{f1(base - size * 0.26)}" r="4.5"/>')
+        parts.append(f'<circle cx="{f1(x)}" cy="{f1(base - size * 0.26)}" r="4.5" stroke-width="1"/>')
         x += 30
     wc = x
     doc.defs += [
         f'<g id="r1">{"".join(parts)}</g>',
-        f'<linearGradient id="molten" gradientUnits="userSpaceOnUse" x1="0" y1="{f1(base - size * 0.75)}" x2="0" y2="{f1(base + size * 0.2)}">'
+        # the glyphs are drawn by reference in font units (y up), so the gradient is set in those units too
+        '<linearGradient id="molten" gradientUnits="userSpaceOnUse" x1="0" y1="760" x2="0" y2="-220">'
         + "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in zip((0, 0.35, 0.7, 1), th["molten"])) + "</linearGradient>",
         '<radialGradient id="spotg"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#fff" stop-opacity=".85"/>'
         '<stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>',
@@ -666,8 +757,8 @@ def render_band(commits, theme, italic, now):
         '<stop offset=".9" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>',
         '<mask id="edge" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="220"><rect width="1000" height="220" fill="url(#edgeg)"/></mask>',
     ]
-    uses = f'<use href="#r1" xlink:href="#r1"/><use href="#r1" xlink:href="#r1" x="{f1(wc)}"/>'
-    row1 = (f'<g class="r1in"><g class="mq1" fill="none" stroke="{th["dim"]}" stroke-width="1" stroke-opacity=".75">{uses}</g>'
+    uses = f'<use href="#r1"/><use href="#r1" x="{f1(wc)}"/>'
+    row1 = (f'<g class="r1in"><g class="mq1" fill="none" stroke="{th["dim"]}" stroke-width="{f1(1 / s)}" stroke-opacity=".75">{uses}</g>'
             f'<g mask="url(#spot)"><g class="mq1" fill="url(#molten)">{uses}</g></g></g>')
 
     # row two: a ticker of my latest public commits, newest first, running the other way
@@ -686,7 +777,7 @@ def render_band(commits, theme, italic, now):
     wf = x
     copies = math.ceil(1000 / wf) + 1
     row2 = (f'<g class="r2in"><g class="mq2"><g id="r2">{"".join(texts)}</g>'
-            + "".join(f'<use href="#r2" xlink:href="#r2" x="{f1(wf * k)}"/>' for k in range(1, copies)) + "</g></g>")
+            + "".join(f'<use href="#r2" x="{f1(wf * k)}"/>' for k in range(1, copies)) + "</g></g>")
 
     caption = "FIG. 2 · LATEST PUBLIC COMMITS"
     doc.body = [
@@ -710,7 +801,31 @@ def render_band(commits, theme, italic, now):
     return doc.render(label)
 
 
-# ---------------------------------------------------------------- project cards
+# ---------------------------------------------------------------- section headers
+
+def render_rule(label, note, theme, spark_at):
+    """A section header: the label types itself, a hairline draws across, and every
+    ten seconds a spark runs the length of it like a lit fuse."""
+    th = THEMES[theme]
+    doc = Doc(1000, 56)
+    doc.defs.append(f'<linearGradient id="trail" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="0" y2="0">'
+                    f'<stop offset="0" stop-color="{th["trace"]}" stop-opacity="0"/><stop offset="1" stop-color="{th["trace"]}"/></linearGradient>')
+    doc.body = [
+        typed(doc, label, 0, 22, 12, th["ink"], 0.9, 1.5, family="MM"),
+        typed(doc, note, 1000, 22, 12, th["dim"], 1.3, 1.5, anchor="end", cps=80),
+        f'<path class="hl" d="M0 40H1000" stroke="{th["faint"]}"/>',
+        f'<g class="fuse"><path d="M-90 40h90" stroke="url(#trail)" stroke-width="2" stroke-linecap="round"/>'
+        f'<circle cy="40" r="7" fill="{th["trace"]}" fill-opacity=".22"/><circle cy="40" r="2.4" fill="{th["hot"]}"/></g>',
+    ]
+    doc.css.append(
+        f".hl{{transform-origin:0 0;animation:hl 1.6s {OUT} .6s backwards}}@keyframes hl{{from{{transform:scaleX(0)}}}}"
+        f".fuse{{transform:translateX(-100px);animation:fuse 10s cubic-bezier(.45,.05,.25,1) {spark_at:.2f}s infinite}}"
+        "@keyframes fuse{0%{transform:translateX(-100px)}26%{transform:translateX(1100px)}100%{transform:translateX(1100px)}}"
+    )
+    return doc.render(f"{label.title()}: {note.lower()}.")
+
+
+# ---------------------------------------------------------------- Fig. 3, project cards
 
 def build_tree(files):
     root = {"children": {}}
@@ -743,7 +858,7 @@ def ago(when, now):
     return f"{days // 30} MONTHS AGO"
 
 
-PULSE_START, PULSE_EVERY = 5.6, 9.0  # every card fires its pulses together, so the gallery beats as one
+PULSE_START, PULSE_EVERY, PULSE_STEP = 5.6, 9.0, 0.55  # a pulse ripples across the gallery card by card
 
 
 def render_card(index, name, tagline, data, theme, now, serif):
@@ -752,6 +867,7 @@ def render_card(index, name, tagline, data, theme, now, serif):
     cx, cy = 200, 220
     Rt, Ls = 112, 34
     D = 2.7 + 0.16 * (index - 1)
+    pulse0 = PULSE_START + PULSE_STEP * (index - 1)
 
     root = build_tree(data["files"])
     leaves, nodes = [], []  # nodes: (depth, parent, node)
@@ -797,13 +913,13 @@ def render_card(index, name, tagline, data, theme, now, serif):
         a_p = angle(parent) if depth > 1 else a_c
         rm = (r_p + r_c) / 2
         p0, c1, c2, p3 = pt(cx, cy, r_p, a_p), pt(cx, cy, rm, a_p), pt(cx, cy, rm, a_c), pt(cx, cy, r_c, a_c)
-        curve = f"C{f1(c1[0])} {f1(c1[1])} {f1(c2[0])} {f1(c2[1])} {f1(p3[0])} {f1(p3[1])}"
-        by_depth.setdefault(depth, []).append(f"M{f1(p0[0])} {f1(p0[1])}{curve}")
-        route[id(node)] = route[id(parent)] + curve
+        by_depth.setdefault(depth, []).append(
+            f"M{nums(*p0)}c{nums(c1[0] - p0[0], c1[1] - p0[1], c2[0] - p0[0], c2[1] - p0[1], p3[0] - p0[0], p3[1] - p0[1])}")
+        route[id(node)] = route[id(parent)] + f"C{nums(*c1, *c2, *p3)}"
         if "children" not in node:
             q = pt(cx, cy, r_c + 3 + Ls * min(1.0, math.sqrt(node["size"] / size_ref)), a_c)
-            node["spike"] = f"M{f1(p3[0])} {f1(p3[1])}L{f1(q[0])} {f1(q[1])}"
-            node["route"] = route[id(node)] + f"L{f1(q[0])} {f1(q[1])}"
+            node["spike"] = f"M{nums(*p3)}l{nums(q[0] - p3[0], q[1] - p3[1])}"
+            node["route"] = route[id(node)] + f"L{nums(*q)}"
             spikes.append(node["spike"])
 
     # highways: the routes a pulse takes from the root out to big files in different folders
@@ -823,27 +939,27 @@ def render_card(index, name, tagline, data, theme, now, serif):
 
     rfull = Rt + Ls + 10
     branches = "".join(f'<path d="{"".join(segs)}"/>' for _, segs in sorted(by_depth.items()))
-    spike_d = "".join(spikes)
     doc.defs += [
         heat_gradient("heat", cx, cy, 0, Rt + Ls, th.get("card_heat", th["heat"])),
+        f'<path id="sk" d="{"".join(spikes)}"/>',  # every spike, drawn three times below by reference
         '<radialGradient id="ring"><stop offset=".7" stop-color="#fff" stop-opacity="0"/><stop offset=".9" stop-color="#fff"/>'
         '<stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>',
         f'<mask id="hf" maskUnits="userSpaceOnUse" x="0" y="0" width="400" height="520"><circle class="hfm" cx="{cx}" cy="{cy}" r="{rfull}" fill="url(#ring)"/></mask>',
         '<clipPath id="nc"><rect x="0" y="372" width="400" height="76"/></clipPath>',
     ]
-    pulses = "".join(f'<path class="hw" pathLength="1" style="--g:{PULSE_START + k * 0.14:.2f}s" d="{lf["route"]}"/>' for k, lf in enumerate(picked))
-    flashes = "".join(f'<path class="lf" style="--g:{PULSE_START + k * 0.14:.2f}s" d="{lf["spike"]}"/>' for k, lf in enumerate(picked))
+    pulses = "".join(f'<path class="hw" pathLength="1" style="--g:{pulse0 + k * 0.14:.2f}s" d="{lf["route"]}"/>' for k, lf in enumerate(picked))
+    flashes = "".join(f'<path class="lf" style="--g:{pulse0 + k * 0.14:.2f}s" d="{lf["spike"]}"/>' for k, lf in enumerate(picked))
 
-    title, _, _ = serif.run(name, 28, 432, 48)
+    title, tw, _ = serif.run(name, 28, 432, 48)
     files = len(data["files"])
     meta = f"{files:,} FILES · PUSHED {ago(data['pushed'], now)}"
     type_start, cps = D + 0.85, 38
     doc.body = [
         f'<g class="tree"><g fill="none" stroke="{th["branch"]}" stroke-width="{f1(branch_w)}" stroke-opacity="{max(0.12, 0.65 * density):.2f}" '
         f'stroke-linecap="round">{branches}</g>'
-        f'<path d="{spike_d}" fill="none" stroke="url(#heat)" stroke-width="{f1(spike_w + 3)}" stroke-opacity="{0.16 if th["glow"] else 0.08}" stroke-linecap="round"/>'
-        f'<path d="{spike_d}" fill="none" stroke="url(#heat)" stroke-width="{f1(spike_w)}" stroke-linecap="round"/></g>',
-        f'<g class="front" mask="url(#hf)"><path d="{spike_d}" fill="none" stroke="{th["hot"]}" stroke-width="{f1(spike_w + 0.6)}" stroke-linecap="round"/></g>',
+        f'<use href="#sk" fill="none" stroke="url(#heat)" stroke-width="{f1(spike_w + 3)}" stroke-opacity="{0.16 if th["glow"] else 0.08}" stroke-linecap="round"/>'
+        f'<use href="#sk" fill="none" stroke="url(#heat)" stroke-width="{f1(spike_w)}" stroke-linecap="round"/></g>',
+        f'<g class="front" mask="url(#hf)"><use href="#sk" fill="none" stroke="{th["hot"]}" stroke-width="{f1(spike_w + 0.6)}" stroke-linecap="round"/></g>',
         f'<g fill="none" stroke="{th["hot"]}" stroke-width="2.2" stroke-linecap="round">{pulses}</g>',
         f'<g fill="none" stroke="{th["hot"]}" stroke-width="{f1(spike_w + 1.2)}" stroke-linecap="round">{flashes}</g>',
         f'<circle class="fd" style="--t:{D:.2f}s" cx="{cx}" cy="{cy}" r="2.5" fill="{th["ink"]}"/>',
@@ -851,7 +967,9 @@ def render_card(index, name, tagline, data, theme, now, serif):
         f'<circle class="rp" cx="{cx}" cy="{cy}" r="5" fill="none" stroke="{th["trace"]}" stroke-width="1.2"/>',
         f'<text class="m fd" style="--t:{D:.2f}s" x="28" y="44" font-size="15" fill="{th["dim"]}">{doc.mono("M", f"{index:02d}")}</text>',
         typed(doc, lang_summary(data["langs"]), 372, 44, 15, th["dim"], D + 0.2, 1, anchor="end", cps=60),
-        '<g clip-path="url(#nc)">' + "".join(f'<path class="nr" style="--k:{k}" d="{d}" fill="{th["ink"]}"/>' for k, (d, _) in enumerate(title)) + "</g>",
+        '<g clip-path="url(#nc)">' + "".join(f'<path class="nr" style="--k:{k}" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(title)) + "</g>",
+        # when the pulse reaches the files, a glint runs across the name
+        glint(doc, "tc", "".join(f'<path d="{d}"/>' for d, *_ in title), 28, 28 + tw, 380, 446, th["pour"], PULSE_EVERY, pulse0 + 1.3),
         typed(doc, tagline, 28, 466, 17, th["dim"], type_start, 0, cps=cps),
         f'<rect class="cur" x="28" y="452" width="9" height="17" fill="{th["trace"]}" '
         f'style="--n:{f1(len(tagline) * 0.6 * 17)}px;--s:{len(tagline)};--d:{len(tagline) / cps:.2f}s;--t:{type_start:.2f}s"/>',
@@ -867,7 +985,7 @@ def render_card(index, name, tagline, data, theme, now, serif):
         "@keyframes pulse{0%{stroke-dashoffset:.11}17%{stroke-dashoffset:-1.01}100%{stroke-dashoffset:-1.01}}"
         f".lf{{opacity:0;animation:flash {PULSE_EVERY}s linear var(--g) infinite}}"
         "@keyframes flash{0%,15%{opacity:0}17%{opacity:1}30%{opacity:0}100%{opacity:0}}"
-        f".rp{{opacity:0;transform-box:fill-box;transform-origin:center;animation:rping {PULSE_EVERY}s linear {PULSE_START - 0.1:.2f}s infinite}}"
+        f".rp{{opacity:0;transform-box:fill-box;transform-origin:center;animation:rping {PULSE_EVERY}s linear {pulse0 - 0.1:.2f}s infinite}}"
         "@keyframes rping{0%{opacity:.8;transform:scale(.6)}7%{opacity:0;transform:scale(5)}100%{opacity:0;transform:scale(5)}}"
         f".nr{{animation:nrise .9s {OUT} backwards;animation-delay:calc({D + 0.35:.2f}s + var(--k) * 38ms)}}"
         "@keyframes nrise{from{transform:translateY(64px)}}"
@@ -880,6 +998,178 @@ def render_card(index, name, tagline, data, theme, now, serif):
     return doc.render(label)
 
 
+# ---------------------------------------------------------------- Fig. 4, when I ship
+
+def render_ridge(times, theme, serif, italic, now):
+    """One ridge per week, oldest at the back, tracing my public commits across the
+    hours of the day. Quiet weeks stay grey; busy weeks run hot."""
+    th = THEMES[theme]
+    doc = Doc(1000, 620)
+    rows, bins = 52, 48
+    end = now.astimezone(TZ).date()
+    local = [t.astimezone(TZ) for t in times]
+    grid = [[0] * bins for _ in range(rows)]
+    for t in local:
+        back = (end - t.date()).days // 7  # whole weeks ago
+        if 0 <= back < rows:
+            grid[rows - 1 - back][(t.hour * 60 + t.minute) * bins // 1440] += 1
+    kern = [math.exp(-0.5 * (d / 1.3) ** 2) for d in range(-4, 5)]
+    smooth = [[sum(r[(i + d) % bins] * kern[d + 4] for d in range(-4, 5)) for i in range(bins)] for r in grid]  # midnight wraps
+    # each ridge shows the shape of its week's day (height), while its colour carries how
+    # busy the week was; weeks quieter than the median stay proportionally small
+    row_peaks = sorted(max(r) for r in smooth if max(r) > 0) or [1]
+    floor = row_peaks[len(row_peaks) // 2]
+    totals = [sum(r) for r in grid]
+    busiest = max(totals) or 1
+    x0, x1, top_y, step, A = 292, 708, 168, 7.4, 70
+    quiet, warm, hot = th["ridge"]
+
+    def colour(k):
+        i = math.sqrt(totals[k] / busiest)
+        return mix(quiet, warm, i / 0.7) if i <= 0.7 else mix(warm, hot, (i - 0.7) / 0.3)
+
+    comet_rows = sorted((k for k in range(rows) if totals[k]), key=lambda k: -totals[k])[:9]
+    ridges = []
+    for k in range(rows):
+        base = top_y + k * step
+        vals = smooth[k] + smooth[k][:1]  # 24:00 meets 00:00
+        scale = max(max(smooth[k]), floor)
+        pts = [(round(x0 + (x1 - x0) * i / bins, 1), round(base - A * (v / scale) ** 0.7, 1)) for i, v in enumerate(vals)]
+        trace, flat = [], 0.0
+        for (xa, ya), (xb, yb) in zip(pts, pts[1:]):
+            if abs(yb - ya) < 0.05:
+                flat += xb - xa
+                continue
+            if flat:
+                trace.append("h" + f1(flat))
+                flat = 0.0
+            trace.append("l" + nums(xb - xa, yb - ya))
+        if flat:
+            trace.append("h" + f1(flat))
+        trace = "".join(trace)
+        # short S-curves in and out, so a ridge rises from its baseline instead of starting at a wall
+        (ax, ay), (bx, by) = pts[0], pts[-1]
+        lead = f"M{nums(ax - 22, base)}c{nums(11, 0, 11, ay - base, 22, ay - base)}"
+        tail = f"c{nums(11, 0, 11, base - by, 22, base - by)}"
+        body = f'<path d="{lead}{trace}{tail}Z" fill="{th["bg"]}" stroke="{colour(k)}"/>'
+        if k in comet_rows:  # an occasional signal runs along the busiest weeks
+            body += (f'<path class="cm" pathLength="1" style="--g:{4.6 + comet_rows.index(k) * 3:.1f}s" '
+                     f'd="{lead}{trace}{tail}" fill="none" stroke="{th["hot"]}" stroke-width="1.8"/>')
+        ridges.append(f'<g class="rw" style="--k:{k}">{body}</g>')
+
+    # axis: hours along the bottom, a few months down the side
+    axis = []
+    for h in (0, 6, 12, 18, 24):
+        x = x0 + (x1 - x0) * h / 24
+        axis.append(f'<path d="M{f1(x)} 562v6" stroke="{th["faint"]}"/>'
+                    f'<text x="{f1(x)}" y="584" class="m" font-size="11" letter-spacing="1" text-anchor="middle" fill="{th["dim"]}">{doc.mono("M", f"{h:02d}:00")}</text>')
+    for k in range(rows):
+        newest = end - dt.timedelta(days=7 * (rows - 1 - k))
+        week = [newest - dt.timedelta(days=j) for j in range(7)]
+        first = next((d for d in week if d.day == 1 and d.month in (1, 4, 7, 10)), None)
+        if first:
+            label = MONTHS[first.month - 1] + (f" {first.year}" if first.month == 1 else "")
+            y = top_y + k * step
+            axis.append(f'<path d="M{x0 - 32} {f1(y)}h6" stroke="{th["faint"]}"/>'
+                        f'<text x="{x0 - 38}" y="{f1(y + 3.5)}" class="m" font-size="10" letter-spacing="1" text-anchor="end" fill="{th["dim"]}">{doc.mono("M", label)}</text>')
+    for k, text in ((0, "A YEAR AGO"), (rows - 1, "THIS WEEK")):
+        axis.append(f'<text x="{x1 + 32}" y="{f1(top_y + k * step + 3.5)}" class="m" font-size="10" letter-spacing="1" fill="{th["dim"]}">{doc.mono("M", text)}</text>')
+
+    # the numbers
+    hours = collections.Counter(t.hour for t in local)
+    peak_hour = max(range(24), key=lambda h: hours[h]) if local else 0
+    weekday = WEEKDAYS[collections.Counter(t.weekday() for t in local).most_common(1)[0][0]] if local else "—"
+    after_dark = round(100 * sum(hours[h] for h in (22, 23, 0, 1, 2, 3, 4)) / max(1, len(local)))
+    title, _, _ = italic.run("When I ship", 40, 100, 44)
+    hour_txt, _, _ = serif.run(f"{peak_hour:02d}:00", 960, 243, 46, "end")
+    day_txt, _, _ = italic.run(weekday, 960, 368, 46, "end")
+    stats = [
+        odometer(doc, serif, f"{len(local):,}", 960, 118, 46, "end", 1.4, th["ink"]),
+        typed(doc, "PUBLIC COMMITS", 960, 144, 12, th["dim"], 2.2, 1.5, anchor="end"),
+        "".join(f'<path class="fg" style="--k:{k};--b:1.7s" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(hour_txt)),
+        typed(doc, "BUSIEST HOUR", 960, 269, 12, th["dim"], 2.4, 1.5, anchor="end"),
+        "".join(f'<path class="fg" style="--k:{k};--b:2s" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(day_txt)),
+        typed(doc, "BUSIEST DAY", 960, 394, 12, th["dim"], 2.6, 1.5, anchor="end"),
+        odometer(doc, serif, f"{after_dark}%", 960, 493, 46, "end", 2.3, th["ink"]),
+        typed(doc, "AFTER DARK", 960, 519, 12, th["dim"], 3.1, 1.5, anchor="end"),
+    ]
+    heading = ["".join(f'<path class="fg" style="--k:{k};--b:.6s" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(title)),
+               typed(doc, "BY HOUR · IST", 40, 128, 12, th["dim"], 1.0, 1.5),
+               typed(doc, "ONE RIDGE PER WEEK", 40, 147, 12, th["dim"], 1.3, 1.5)]
+
+    doc.defs += [FEATHER,
+                 f'<linearGradient id="scang" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{th["trace"]}" stop-opacity="0"/>'
+                 f'<stop offset=".5" stop-color="{th["trace"]}"/><stop offset="1" stop-color="{th["trace"]}" stop-opacity="0"/></linearGradient>']
+    doc.body = heading + axis + [f'<g stroke-width="1.2" stroke-linejoin="round">{"".join(ridges)}</g>',
+                                 f'<rect class="scan" x="{x0 - 1}" y="60" width="2" height="500" fill="url(#scang)"/>'] + stats
+    doc.css.append(
+        ".rw{animation:wipe 1s cubic-bezier(.3,0,.2,1) backwards;animation-delay:calc(.9s + var(--k) * 45ms)}"
+        "@keyframes wipe{from{clip-path:inset(-40px 100% -40px 0)}to{clip-path:inset(-40px 0 -40px 0)}}"
+        ".cm{stroke-dasharray:.05 2;stroke-dashoffset:.06;animation:comet 27s linear var(--g) infinite}"
+        "@keyframes comet{0%{stroke-dashoffset:.06}9%{stroke-dashoffset:-1.01}100%{stroke-dashoffset:-1.01}}"
+        f".scan{{opacity:0;animation:scan 12s {INOUT} 5.2s infinite}}"
+        f"@keyframes scan{{0%{{opacity:0;transform:translateX(0)}}3%{{opacity:.7}}21%{{opacity:.7}}24%{{opacity:0;transform:translateX({x1 - x0}px)}}"
+        f"100%{{opacity:0;transform:translateX({x1 - x0}px)}}}}"
+        f".fg{{animation:rise .8s {OUT} backwards;animation-delay:calc(var(--b) + var(--k) * 45ms)}}"
+    )
+    label = (f"A ridgeline of my public commits over the last year, one ridge per week with the oldest at the back, "
+             f"across the 24 hours of the day: {len(local):,} commits, busiest at {peak_hour:02d}:00 and on {weekday}s, "
+             f"{after_dark}% of them after dark, between 22:00 and 05:00.")
+    return doc.render(label)
+
+
+# ---------------------------------------------------------------- the closing card
+
+def render_fin(theme, italic, now):
+    th = THEMES[theme]
+    doc = Doc(1000, 330)
+    size = 60
+    line1, _, _ = italic.words("Let’s build something", 500, 112, size, doc)
+    line2, w2, _ = italic.words("that runs on your machine", 500 - 9, 186, size, doc)  # leaves room for the ember full stop
+    hot_words = {"your", "machine"}
+    k, words = 0, []
+    for line, top in ((line1, 112), (line2, 186)):
+        clip = doc.uid("lc")
+        doc.defs.append(f'<clipPath id="{clip}"><rect x="0" y="{top - size}" width="1000" height="{size * 1.32:.0f}"/></clipPath>')
+        groups = []
+        for word, paths, _, _ in line:
+            fill = "url(#fmolten)" if word in hot_words else th["ink"]
+            groups.append(f'<g class="wd" style="--k:{k}" fill="{fill}">{"".join(paths)}</g>')
+            k += 1
+        words.append(f'<g clip-path="url(#{clip})">{"".join(groups)}</g>')
+
+    ua, ub = line2[-2][2], line2[-1][3]  # "your" to the end of "machine"
+    under = f"M{nums(ua, 204)}Q{nums((ua + ub) / 2, 212, ub, 202)}"
+    ex, ey = ub + 13, 181
+    email = "SREEVARSHAN1511@GMAIL.COM"
+    doc.defs += [
+        '<linearGradient id="fmolten" gradientUnits="userSpaceOnUse" x1="0" y1="760" x2="0" y2="-220">'
+        + "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in zip((0, 0.35, 0.7, 1), th["molten"])) + "</linearGradient>",
+        f'<radialGradient id="emb"><stop offset="0" stop-color="{th["trace"]}" stop-opacity=".55"/><stop offset="1" stop-color="{th["trace"]}" stop-opacity="0"/></radialGradient>',
+    ]
+    fin, _, _ = italic.run("Fin.", 1000, 314, 30, "end")
+    doc.body = words + [
+        f'<path class="ul" d="{under}" pathLength="1" fill="none" stroke="{th["pour"]}" stroke-width="2.4" stroke-linecap="round"/>',
+        f'<path class="uc" d="{under}" pathLength="1" fill="none" stroke="{th["hot"]}" stroke-width="3" stroke-linecap="round"/>',
+        f'<g class="em"><circle class="eh" cx="{f1(ex)}" cy="{ey}" r="22" fill="url(#emb)"/><circle cx="{f1(ex)}" cy="{ey}" r="5.5" fill="{th["trace"]}"/></g>',
+        f'<circle class="ping" style="--t:2.05s" cx="{f1(ex)}" cy="{ey}" r="6" fill="none" stroke="{th["trace"]}" stroke-width="1.4"/>',
+        typed(doc, email, 500, 262, 14, th["ink"], 2.6, 2.5, family="MM", anchor="middle", cps=36),
+        typed(doc, "REDRAWN NIGHTLY FROM LIVE GITHUB DATA · " + day(now.date()), 0, 312, 11, th["dim"], 3.2, 1.2, cps=90),
+        "".join(f'<path class="fg" style="--k:{k}" d="{d}" fill="{th["ink"]}"/>' for k, (d, *_) in enumerate(fin)),
+    ]
+    doc.css.append(
+        f".wd{{animation:wrise 1s {OUT} backwards;animation-delay:calc(.7s + var(--k) * 85ms)}}@keyframes wrise{{from{{transform:translateY({size + 20}px)}}}}"
+        f".ul{{animation:grow 1.1s {INOUT} 1.6s backwards}}"
+        ".uc{stroke-dasharray:.12 3;stroke-dashoffset:.13;animation:fuse2 8s linear 3.6s infinite}"
+        "@keyframes fuse2{0%{stroke-dashoffset:.13}16%{stroke-dashoffset:-1.01}100%{stroke-dashoffset:-1.01}}"
+        f".em{{transform-box:fill-box;transform-origin:center;animation:rise .6s {OUT} 1.95s backwards}}"
+        ".eh{transform-box:fill-box;transform-origin:center;animation:breathe 2.6s ease-in-out 2.6s infinite}"
+        "@keyframes breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.55}}"
+        f".fg{{animation:rise .8s {OUT} backwards;animation-delay:calc(3.6s + var(--k) * 60ms)}}"
+    )
+    return doc.render(f"Let's build something that runs on your machine. {email.lower()}")
+
+
 # ---------------------------------------------------------------- main
 
 def main():
@@ -889,9 +1179,14 @@ def main():
     serif, italic = Face(SERIF), Face(SERIF_ITALIC)
     days = contribution_days()
     commits = recent_commits()
+    times = commit_times()
     for theme in THEMES:
         (out / f"year-{theme}.svg").write_text(render_year(days, theme, serif, italic), encoding="utf-8")
         (out / f"band-{theme}.svg").write_text(render_band(commits, theme, italic, now), encoding="utf-8")
+        (out / f"ridge-{theme}.svg").write_text(render_ridge(times, theme, serif, italic, now), encoding="utf-8")
+        (out / f"fin-{theme}.svg").write_text(render_fin(theme, italic, now), encoding="utf-8")
+        for name, (label, note, spark_at) in RULES.items():
+            (out / f"rule-{name}-{theme}.svg").write_text(render_rule(label, note, theme, spark_at), encoding="utf-8")
     for i, (repo, name, tagline) in enumerate(PROJECTS, 1):
         data = repo_data(repo)
         for theme in THEMES:
