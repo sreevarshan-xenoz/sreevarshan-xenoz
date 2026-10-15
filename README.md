@@ -1,10 +1,8 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=220&text=Sree%20Varshan&fontAlign=50&fontAlignY=40&fontSize=58&desc=Systems%20%26%20AI%20Engineer%20%E2%80%A2%20Rust%20%E2%80%A2%20Local-first%20tooling&descAlign=50&descAlignY=62&descSize=18&animation=fadeIn&fontColor=F8FAFC&color=0:0f172a,35:1e293b,70:0b3b66,100:0ea5e9" alt="Sree Varshan — Systems & AI Engineer" />
+  <img src="assets/hero.svg" width="100%" alt="Sree Varshan's desktop: a Hyprland session with a terminal typing out whoami, focus and current projects, a fastfetch window and a btop panel" />
 </p>
 
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&duration=2800&pause=900&color=38BDF8&center=true&vCenter=true&width=760&lines=Building+local-first+AI+tools+in+Rust;xencode+%E2%80%94+a+coding+agent+on+your+own+models;Pocketdesk+%E2%80%94+your+desktop%2C+from+your+phone;Arch+Linux+%C2%B7+Hyprland+%C2%B7+Neovim" alt="Typing intro" />
-</p>
+<h3 align="center">Systems &amp; AI engineer building local-first tools in Rust.</h3>
 
 <p align="center">
   <a href="https://sreevarshan-peach.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-0f172a?style=for-the-badge&logo=vercel&logoColor=38BDF8" alt="Portfolio" /></a>
@@ -18,13 +16,14 @@
   <a href="#about">About</a> ·
   <a href="#work">Selected Work</a> ·
   <a href="#lab">Lab</a> ·
+  <a href="#journey">Journey</a> ·
   <a href="#stack">Stack</a> ·
   <a href="#activity">Activity</a>
 </p>
 
 <a id="about"></a>
 
-## `$ cat about.rs`
+## `❯ cat about.rs`
 
 ```rust
 let sree = Engineer {
@@ -45,7 +44,7 @@ I care about latency, memory limits, privacy, and whether the thing actually wor
 
 <a id="work"></a>
 
-## 🛠️ Selected Work
+## `❯ ls ~/work`
 
 <table>
   <tr>
@@ -103,15 +102,23 @@ I care about latency, memory limits, privacy, and whether the thing actually wor
 
 <a id="lab"></a>
 
-## 🔬 In the Lab
+## `❯ cd ~/lab`
 
 - **[riya](https://github.com/sreevarshan-xenoz/riya)** is a research prototype of an AI with an affective core. It combines a Gated DeltaNet + attention hybrid LM, a JEPA world model, and homeostatic drives that shape how it speaks. It trains on a free Colab T4.
 - **On-device inference** means making local models genuinely useful on consumer GPUs instead of being a fallback.
 - **Agent reliability** covers approval gates, fallback chains, and evidence-backed decisions over vibes.
 
+<a id="journey"></a>
+
+## `❯ git log --graph`
+
+<p align="center">
+  <img src="assets/journey.svg" width="100%" alt="git log --graph of my journey: first commit in 2024, ML and vision apps, a move to Arch and Hyprland, a Rust branch starting with Pocketdesk and xencode that merges back in 2026 with CodeHalo and FluxBond, and now riya" />
+</p>
+
 <a id="stack"></a>
 
-## 🧪 Stack
+## `❯ which --all stack`
 
 <p>
   <b>Languages</b><br/>
@@ -161,7 +168,7 @@ The fix is `if score < best_score:`. If you wanted the max instead, start from `
 
 <a id="activity"></a>
 
-## 📈 Activity
+## `❯ btop --github`
 
 <p align="center">
   <img height="165" src="https://github-readme-stats.vercel.app/api?username=sreevarshan-xenoz&show_icons=true&include_all_commits=true&count_private=true&hide_border=true&bg_color=0d1117&title_color=38bdf8&icon_color=38bdf8&text_color=c9d1d9" alt="GitHub stats" />
@@ -177,5 +184,6 @@ The fix is `if score < best_score:`. If you wanted the max instead, start from `
 </p>
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&section=footer&height=110&color=0:0ea5e9,30:0b3b66,65:1e293b,100:0f172a" alt="" />
+  <code>❯ exit 0</code><br/>
+  <sub>Thanks for scrolling. If something here sparks an idea, <a href="mailto:sreevarshan1511@gmail.com">say hi</a>.</sub>
 </p>

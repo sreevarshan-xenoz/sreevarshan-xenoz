@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="420" viewBox="0 0 860 420" role="img" aria-label="git log --graph of Sree Varshan's journey, from first commit in 2024 to Rust tooling and AI research in 2026">
+  <style>
+    text { font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, "DejaVu Sans Mono", ui-monospace, monospace; font-size: 14px; }
+    .d  { fill: #64748b; }
+    .m  { fill: #e2e8f0; }
+    .n  { fill: #94a3b8; }
+    .hd { fill: #4ade80; font-weight: 700; }
+    .rs { fill: #fb923c; font-weight: 700; }
+    .dim { fill: #64748b; font-size: 12px; }
+    .row { opacity: 0; animation: in 0.35s ease-out forwards; }
+    @keyframes in { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+    .lane { stroke-dasharray: 600; stroke-dashoffset: 600; animation: draw 2.4s ease-out 0.2s forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+  </style>
+
+  <rect x="1" y="1" width="858" height="418" rx="12" fill="#0b1120" stroke="#1e293b" stroke-width="2"/>
+  <text x="22" y="26" class="dim">kitty — ~/sreevarshan</text>
+  <line x1="1" y1="38" x2="859" y2="38" stroke="#1e293b"/>
+  <text x="22" y="64" class="m"><tspan fill="#38bdf8" font-weight="700">❯ </tspan>git log --graph --oneline --since=2024</text>
+
+  <!-- graph lanes: main (sky) and rust (orange) -->
+  <path class="lane" d="M40 92 V 380" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+  <path class="lane" d="M40 116 C 40 128, 64 128, 64 140 V 308 C 64 320, 40 320, 40 332" stroke="#fb923c" stroke-width="2.5" fill="none"/>
+
+  <g>
+    <circle cx="40" cy="92"  r="5.5" fill="#0b1120" stroke="#38bdf8" stroke-width="2.5"/>
+    <circle cx="40" cy="116" r="5.5" fill="#38bdf8"/>
+    <circle cx="64" cy="140" r="5"   fill="#fb923c"/>
+    <circle cx="40" cy="164" r="5"   fill="#38bdf8"/>
+    <circle cx="64" cy="188" r="5"   fill="#fb923c"/>
+    <circle cx="40" cy="212" r="5"   fill="#38bdf8"/>
+    <circle cx="64" cy="236" r="5"   fill="#fb923c"/>
+    <circle cx="64" cy="260" r="5"   fill="#fb923c"/>
+    <circle cx="40" cy="284" r="5"   fill="#38bdf8"/>
+    <circle cx="64" cy="308" r="5"   fill="#fb923c"/>
+    <circle cx="40" cy="332" r="5"   fill="#38bdf8"/>
+    <circle cx="40" cy="356" r="5"   fill="#38bdf8"/>
+    <circle cx="40" cy="380" r="5"   fill="#38bdf8"/>
+  </g>
+
+  <text x="100" y="97"  class="row" style="animation-delay:.30s"><tspan class="d">2026-10 </tspan><tspan class="hd">(HEAD -&gt; main) </tspan><tspan class="m">riya</tspan><tspan class="n"> — research AI with an affective core and a JEPA world model</tspan></text>
+  <text x="100" y="121" class="row" style="animation-delay:.42s"><tspan class="d">2026-09 </tspan><tspan class="m">Merge branch </tspan><tspan class="rs">'rust'</tspan><tspan class="n"> — the systems era lands on main</tspan></text>
+  <text x="100" y="145" class="row" style="animation-delay:.54s"><tspan class="d">2026-09 </tspan><tspan class="m">CodeHalo + FluxBond</tspan><tspan class="n"> — agent HUD, multi-link network bonding</tspan></text>
+  <text x="100" y="169" class="row" style="animation-delay:.66s"><tspan class="d">2026-08 </tspan><tspan class="m">LedgerMind</tspan><tspan class="n"> — finance-ops agent for the Razorpay Buildathon</tspan></text>
+  <text x="100" y="193" class="row" style="animation-delay:.78s"><tspan class="d">2026-07 </tspan><tspan class="m">project-friday</tspan><tspan class="n"> — a desktop agent that uses Windows like a human</tspan></text>
+  <text x="100" y="217" class="row" style="animation-delay:.90s"><tspan class="d">2026-06 </tspan><tspan class="m">Iris Agent</tspan><tspan class="n"> — hear, think, remember, speak</tspan></text>
+  <text x="100" y="241" class="row" style="animation-delay:1.02s"><tspan class="d">2026-04 </tspan><tspan class="m">AniTerm</tspan><tspan class="n"> — anime, but make it a TUI</tspan></text>
+  <text x="100" y="265" class="row" style="animation-delay:1.14s"><tspan class="d">2025-08 </tspan><tspan class="m">xencode</tspan><tspan class="n"> — first commit of the local-first coding agent</tspan></text>
+  <text x="100" y="289" class="row" style="animation-delay:1.26s"><tspan class="d">2025-08 </tspan><tspan class="m">Iris OS</tspan><tspan class="n"> — the dream of a voice-first AI desktop</tspan></text>
+  <text x="100" y="313" class="row" style="animation-delay:1.38s"><tspan class="d">2025-07 </tspan><tspan class="rs">(rust) </tspan><tspan class="m">Pocketdesk</tspan><tspan class="n"> — first serious Rust; branch created</tspan></text>
+  <text x="100" y="337" class="row" style="animation-delay:1.50s"><tspan class="d">2025-05 </tspan><tspan class="m">Moved to Arch + Hyprland</tspan><tspan class="n"> — never looked back</tspan></text>
+  <text x="100" y="361" class="row" style="animation-delay:1.62s"><tspan class="d">2025-04 </tspan><tspan class="m">YOLO, Jarvis, Kotlin vision apps</tspan><tspan class="n"> — ML in the wild</tspan></text>
+  <text x="100" y="385" class="row" style="animation-delay:1.74s"><tspan class="d">2024-08 </tspan><tspan class="m">Initial commit</tspan><tspan class="n"> — hello, world</tspan></text>
+</svg>
