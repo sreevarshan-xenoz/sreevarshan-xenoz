@@ -6,7 +6,7 @@
 <p align="center">
 I build local-first software, mostly in Rust.<br>
 Coding agents that run on your own models, a remote desktop that lives on your phone,<br>
-and a network layer that turns Wi-Fi and 5G into one link.
+and research agents that do the reading for you.
 </p>
 
 <p align="center">
@@ -21,14 +21,14 @@ and a network layer that turns Wi-Fi and 5G into one link.
 <p align="center">
 <a href="https://github.com/sreevarshan-xenoz/xencode"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-xencode-dark.svg"><img alt="xencode, a local-first AI coding agent, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-xencode-light.svg" width="32%"></picture></a>
 <a href="https://github.com/sreevarshan-xenoz/Pocketdesk"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-pocketdesk-dark.svg"><img alt="Pocketdesk, your desktop on your phone, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-pocketdesk-light.svg" width="32%"></picture></a>
-<a href="https://github.com/sreevarshan-xenoz/project-friday"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-project-friday-dark.svg"><img alt="FRIDAY, a desktop agent for Windows, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-project-friday-light.svg" width="32%"></picture></a>
 <a href="https://github.com/sreevarshan-xenoz/codehalo"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-codehalo-dark.svg"><img alt="CodeHalo, a HUD for AI coding agents, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-codehalo-light.svg" width="32%"></picture></a>
-<a href="https://github.com/sreevarshan-xenoz/fluxbond"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-fluxbond-dark.svg"><img alt="FluxBond, Wi-Fi and 5G bonded as one link, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-fluxbond-light.svg" width="32%"></picture></a>
+<a href="https://github.com/sreevarshan-xenoz/metapak"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-metapak-dark.svg"><img alt="metapak, one TUI for every package manager, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-metapak-light.svg" width="32%"></picture></a>
+<a href="https://github.com/sreevarshan-xenoz/Research-agent"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-research-agent-dark.svg"><img alt="Research Agent, a research agent that writes LaTeX, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-research-agent-light.svg" width="32%"></picture></a>
 <a href="https://github.com/sreevarshan-xenoz/LedgerMind"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-ledgermind-dark.svg"><img alt="LedgerMind, a finance-ops reconciliation agent, drawn as its file tree" src="https://raw.githubusercontent.com/sreevarshan-xenoz/sreevarshan-xenoz/output/card-ledgermind-light.svg" width="32%"></picture></a>
 </p>
 
 <p align="center">
-<sub>Also: <a href="https://github.com/sreevarshan-xenoz/AniTerm">AniTerm</a> · <a href="https://github.com/sreevarshan-xenoz/metapak">metapak</a> · <a href="https://github.com/sreevarshan-xenoz/project-buddy">project-buddy</a> · <a href="https://github.com/sreevarshan-xenoz/Iris-Agent">Iris</a> · <a href="https://github.com/sreevarshan-xenoz/riya">riya</a></sub>
+<sub>Also: <a href="https://github.com/sreevarshan-xenoz/Aether-Desk">Aether-Desk</a> · <a href="https://github.com/sreevarshan-xenoz/EDITH">EDITH</a> · <a href="https://github.com/sreevarshan-xenoz/scan-to-mesh">scan-to-mesh</a> · <a href="https://github.com/sreevarshan-xenoz/hyprland-dots-quickshell">hyprland-dots</a></sub>
 </p>
 
 <br>

@@ -23,12 +23,12 @@ import urllib.request
 from pathlib import Path
 
 USER = "sreevarshan-xenoz"
-PROJECTS = [  # repo, display name, tagline (keep taglines under ~32 characters)
+PROJECTS = [  # public repos only: repo, display name, tagline (under ~33 characters)
     ("xencode", "xencode", "local-first AI coding agent"),
     ("Pocketdesk", "Pocketdesk", "your desktop, on your phone"),
-    ("project-friday", "FRIDAY", "a desktop agent for Windows"),
     ("codehalo", "CodeHalo", "a HUD for AI coding agents"),
-    ("fluxbond", "FluxBond", "Wi-Fi and 5G, bonded as one"),
+    ("metapak", "metapak", "one TUI for every package manager"),
+    ("Research-agent", "Research Agent", "research agent that writes LaTeX"),
     ("LedgerMind", "LedgerMind", "finance-ops reconciliation agent"),
 ]
 SKIP_DIRS = {"node_modules", "target", "dist", "build", "vendor", ".git", "__pycache__", ".next", ".venv"}
